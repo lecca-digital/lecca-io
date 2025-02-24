@@ -2,7 +2,7 @@ import { createAction } from '@lecca-io/toolkit';
 import { z } from 'zod';
 
 export const createSegmentContact = createAction({
-  id: 'segment_contact_create',
+  id: 'qcall_action_segment-contact-create',
   name: 'Create Segment Contact',
   description: 'Create a contact in a specified segment',
   
@@ -105,6 +105,7 @@ export const createSegmentContact = createAction({
   ],
 
   run: async ({
+    connection,
     configValue,
     workspaceId,
     http,
@@ -114,7 +115,7 @@ export const createSegmentContact = createAction({
       url: `https://api.qcall.ai/api/v1/segment/contact/create?id=${configValue.segment_id}`,
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.QCALL_API_KEY,
+        'x-api-key': connection.apiKey,
       },
       data: {
         first_name: configValue.first_name,
