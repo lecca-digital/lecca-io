@@ -489,7 +489,7 @@ function AdvancedSettingsDropdown({ agent }: { agent: Agent }) {
         >
           <Accordion.Trigger className="text-muted-foreground flex items-center justify-center">
             <span id="onboarding-agents-overview-advanced-settings">
-              Advanced Settings
+              Configure
             </span>
           </Accordion.Trigger>
           <Accordion.Content>

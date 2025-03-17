@@ -205,10 +205,21 @@ export class AgentsService {
         tools: expansion?.tools ?? false,
         toolIds: expansion?.toolIds ?? false,
         triggerIds: expansion?.triggerIds ?? false,
-        taskNamingInstructions: expansion?.taskNamingInstructions ?? false,
         llmModel: expansion?.llmModel ?? false,
         llmProvider: expansion?.llmProvider ?? false,
         llmConnection: expansion?.llmConnection
+          ? {
+              select: {
+                id: true,
+                connectionId: true,
+                name: true,
+              },
+            }
+          : false,
+        taskNamingInstructions: expansion?.taskNamingInstructions ?? false,
+        taskNamingLlmModel: expansion?.taskNamingLlmModel ?? false,
+        taskNamingLlmProvider: expansion?.taskNamingLlmProvider ?? false,
+        taskNamingLlmConnection: expansion?.taskNamingLlmConnection
           ? {
               select: {
                 id: true,
@@ -731,10 +742,21 @@ export class AgentsService {
         triggers: expansion?.triggers ?? false,
         toolIds: expansion?.toolIds ?? false,
         triggerIds: expansion?.triggerIds ?? false,
-        taskNamingInstructions: expansion?.taskNamingInstructions ?? false,
         llmModel: expansion?.llmModel ?? false,
         llmProvider: expansion?.llmProvider ?? false,
         llmConnection: expansion?.llmConnection
+          ? {
+              select: {
+                id: true,
+                connectionId: true,
+                name: true,
+              },
+            }
+          : false,
+        taskNamingInstructions: expansion?.taskNamingInstructions ?? false,
+        taskNamingLlmModel: expansion?.taskNamingLlmModel ?? false,
+        taskNamingLlmProvider: expansion?.taskNamingLlmProvider ?? false,
+        taskNamingLlmConnection: expansion?.taskNamingLlmConnection
           ? {
               select: {
                 id: true,

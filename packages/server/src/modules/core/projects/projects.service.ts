@@ -89,6 +89,33 @@ export class ProjectsService {
         description: expansion?.description ?? false,
         createdAt: expansion?.createdAt ?? false,
         updatedAt: expansion?.updatedAt ?? false,
+        defaultAgentLlmProvider: expansion?.defaultAgentLlmProvider ?? false,
+        defaultAgentLlmModel: expansion?.defaultAgentLlmModel ?? false,
+        defaultAgentLlmConnection: expansion?.defaultAgentLlmConnection
+          ? {
+              select: {
+                id: true,
+                connectionId: true,
+                name: true,
+              },
+            }
+          : false,
+        defaultTaskNamingInstructions:
+          expansion?.defaultTaskNamingInstructions ?? false,
+        defaultTaskNamingLlmProvider:
+          expansion?.defaultTaskNamingLlmProvider ?? false,
+        defaultTaskNamingLlmModel:
+          expansion?.defaultTaskNamingLlmModel ?? false,
+        defaultTaskNamingLlmConnection:
+          expansion?.defaultTaskNamingLlmConnection
+            ? {
+                select: {
+                  id: true,
+                  connectionId: true,
+                  name: true,
+                },
+              }
+            : false,
         _count: expansion?.countAgents
           ? {
               select: {
@@ -209,6 +236,33 @@ export class ProjectsService {
         createdAt: expansion?.createdAt ?? false,
         updatedAt: expansion?.updatedAt ?? false,
         description: expansion?.description ?? false,
+        defaultAgentLlmProvider: expansion?.defaultAgentLlmProvider ?? false,
+        defaultAgentLlmModel: expansion?.defaultAgentLlmModel ?? false,
+        defaultAgentLlmConnection: expansion?.defaultAgentLlmConnection
+          ? {
+              select: {
+                id: true,
+                connectionId: true,
+                name: true,
+              },
+            }
+          : false,
+        defaultTaskNamingInstructions:
+          expansion?.defaultTaskNamingInstructions ?? false,
+        defaultTaskNamingLlmProvider:
+          expansion?.defaultTaskNamingLlmProvider ?? false,
+        defaultTaskNamingLlmModel:
+          expansion?.defaultTaskNamingLlmModel ?? false,
+        defaultTaskNamingLlmConnection:
+          expansion?.defaultTaskNamingLlmConnection
+            ? {
+                select: {
+                  id: true,
+                  connectionId: true,
+                  name: true,
+                },
+              }
+            : false,
         _count: expansion?.countAgents
           ? {
               select: {

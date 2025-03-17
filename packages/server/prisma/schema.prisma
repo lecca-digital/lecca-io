@@ -145,6 +145,19 @@ model WorkspacePreferences {
 
   disabledFeatures String[]
 
+  //AGENT LLM DEFAULTS
+  defaultAgentLlmProvider        String?
+  defaultAgentLlmModel           String?
+  FK_defaultAgentLlmConnectionId String?     @unique
+  defaultAgentLlmConnection      Connection? @relation(fields: [FK_defaultAgentLlmConnectionId], references: [id], name: "workspaceDefaultAgentLlmConnection")
+
+  //AGENT TASK NAMING DEFAULTS
+  defaultTaskNamingInstructions       String?     @db.VarChar(1000)
+  defaultTaskNamingLlmProvider        String?
+  defaultTaskNamingLlmModel           String?
+  FK_defaultTaskNamingLlmConnectionId String?     @unique
+  defaultTaskNamingLlmConnection      Connection? @relation(fields: [FK_defaultTaskNamingLlmConnectionId], references: [id], name: "workspaceDefaultTaskNamingLlmConnection")
+
   //WORKSPACE USER RELATION
   FK_workspaceId String    @unique
   workspace      Workspace @relation(fields: [FK_workspaceId], references: [id], onDelete: Cascade)
@@ -212,6 +225,19 @@ model Project {
 
   //AGENTS
   agents Agent[]
+
+  //AGENT LLM DEFAULTS
+  defaultAgentLlmProvider        String?
+  defaultAgentLlmModel           String?
+  FK_defaultAgentLlmConnectionId String?
+  defaultAgentLlmConnection      Connection? @relation(fields: [FK_defaultAgentLlmConnectionId], references: [id], onDelete: Cascade, name: "projectDefaultAgentLlmConnection")
+
+  //AGENT TASK NAMING DEFAULTS
+  defaultTaskNamingInstructions       String?     @db.VarChar(1000)
+  defaultTaskNamingLlmProvider        String?
+  defaultTaskNamingLlmModel           String?
+  FK_defaultTaskNamingLlmConnectionId String?
+  defaultTaskNamingLlmConnection      Connection? @relation(fields: [FK_defaultTaskNamingLlmConnectionId], references: [id], onDelete: Cascade, name: "projectDefaultTaskNamingLlmConnection")
 
   //WORKSPACE RELATION
   FK_workspaceId String
@@ -371,7 +397,11 @@ model Agent {
   messageLookbackLimit Int     @default(5)
 
   //Naming Config
-  taskNamingInstructions String? @db.VarChar(1000)
+  taskNamingInstructions       String?     @db.VarChar(1000)
+  taskNamingLlmProvider        String?
+  taskNamingLlmModel           String?
+  FK_taskNamingLlmConnectionId String?
+  taskNamingLlmConnection      Connection? @relation(fields: [FK_taskNamingLlmConnectionId], references: [id], onDelete: Cascade, name: "agentTaskNamingLlmConnection")
 
   //NEW TOOL FIELDS
   tools    Json?          @db.JsonB
@@ -767,8 +797,13 @@ model Connection {
   workspace      Workspace @relation(fields: [FK_workspaceId], references: [id], onDelete: Cascade, name: "WorkspaceConnection")
 
   //AGENT RELATION
-  agents                         Agent[] @relation(name: "AgentConnections")
-  agentsWithDefaultLlmConnection Agent[] @relation(name: "llmConnection")
+  agents                                      Agent[]               @relation(name: "AgentConnections")
+  agentsWithDefaultLlmConnection              Agent[]               @relation(name: "llmConnection")
+  agentsWithTaskNamingLlmConnection           Agent[]               @relation(name: "agentTaskNamingLlmConnection")
+  projectsWithDefaultAgentLlmConnection       Project[]             @relation(name: "projectDefaultAgentLlmConnection")
+  projectsWithDefaultTaskNamingLlmConnection  Project[]             @relation(name: "projectDefaultTaskNamingLlmConnection")
+  workspaceWithDefaultAgentLlmConnection      WorkspacePreferences? @relation(name: "workspaceDefaultAgentLlmConnection")
+  workspaceWithDefaultTaskNamingLlmConnection WorkspacePreferences? @relation(name: "workspaceDefaultTaskNamingLlmConnection")
 
   //PROJECT RELATION
   FK_projectId String?

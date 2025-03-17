@@ -33,6 +33,25 @@ export class WorkspacePreferencesService {
         select: {
           id: true,
           disabledFeatures: true,
+          defaultAgentLlmProvider: true,
+          defaultAgentLlmModel: true,
+          defaultAgentLlmConnection: {
+            select: {
+              id: true,
+              connectionId: true,
+              name: true,
+            },
+          },
+          defaultTaskNamingInstructions: true,
+          defaultTaskNamingLlmProvider: true,
+          defaultTaskNamingLlmModel: true,
+          defaultTaskNamingLlmConnection: {
+            select: {
+              id: true,
+              connectionId: true,
+              name: true,
+            },
+          },
         },
       });
 

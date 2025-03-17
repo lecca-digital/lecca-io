@@ -44,4 +44,32 @@ export class ProjectExpansionDto {
   @IsOptional()
   @IsBoolean()
   countWorkflows?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  defaultAgentLlmConnection?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  defaultAgentLlmModel?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  defaultAgentLlmProvider?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  defaultTaskNamingInstructions?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  defaultTaskNamingLlmConnection?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  defaultTaskNamingLlmModel?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  defaultTaskNamingLlmProvider?: boolean;
 }

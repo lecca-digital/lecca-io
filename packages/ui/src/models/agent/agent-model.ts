@@ -18,8 +18,6 @@ export const agentSchema = z.object({
   name: z.string(),
   profileImageUrl: z.string().optional(),
   description: z.string().optional(),
-  instructions: z.string().optional(),
-  taskNamingInstructions: z.string().optional(),
   temperature: z.number().optional(),
   maxTokens: z.number().optional(),
   topP: z.number().optional(),
@@ -31,6 +29,8 @@ export const agentSchema = z.object({
   messageLookbackLimit: z.number().optional(),
   toolIds: z.array(z.string()).optional(),
   triggerIds: z.array(z.string()).optional(),
+
+  instructions: z.string().optional(),
   llmConnection: z
     .object({
       id: z.string().uuid(),
@@ -40,6 +40,19 @@ export const agentSchema = z.object({
     .optional(),
   llmProvider: z.string().optional(),
   llmModel: z.string().optional(),
+
+  taskNamingInstructions: z.string().optional(),
+  taskNamingLlmConnection: z
+    .object({
+      id: z.string().uuid(),
+      connectionId: z.string(),
+      name: z.string(),
+    })
+    .nullable()
+    .optional(),
+  taskNamingLlmProvider: z.string().nullable().optional(),
+  taskNamingLlmModel: z.string().nullable().optional(),
+
   agentActions: z.array(
     z.object({
       id: z.string().uuid(),
@@ -130,7 +143,6 @@ export const createAgentSchema = agentSchema
     description: z.string().optional(),
     profileImageUrl: z.string().optional(),
     instructions: z.string().optional(),
-    taskNamingInstructions: z.string().optional(),
     temperature: z.number().optional(),
     maxTokens: z.number().optional(),
     topP: z.number().optional(),
@@ -151,6 +163,10 @@ export const createAgentSchema = agentSchema
     llmModel: z.string().optional(),
     webAccess: z.boolean().optional(),
     phoneAccess: z.boolean().optional(),
+    taskNamingInstructions: z.string().nullable().optional(),
+    taskNamingLlmConnectionId: z.string().uuid().nullable().optional(),
+    taskNamingLlmProvider: z.string().nullable().optional(),
+    taskNamingLlmModel: z.string().nullable().optional(),
   });
 
 export type CreateAgentType = z.infer<typeof createAgentSchema>;
@@ -161,7 +177,6 @@ export const updateAgentSchema = agentSchema
     description: true,
     profileImageUrl: true,
     instructions: true,
-    taskNamingInstructions: true,
     temperature: true,
     maxTokens: true,
     topP: true,
@@ -175,6 +190,9 @@ export const updateAgentSchema = agentSchema
     messageLookbackLimit: true,
     tools: true,
     triggers: true,
+    taskNamingInstructions: true,
+    taskNamingLlmModel: true,
+    taskNamingLlmProvider: true,
   })
   .extend({
     connectionIds: z.array(z.string().uuid()).optional(),
@@ -186,6 +204,7 @@ export const updateAgentSchema = agentSchema
     llmConnectionId: z.string().uuid().optional().nullable(),
     webAccess: z.boolean().optional().nullable(),
     phoneAccess: z.boolean().optional().nullable(),
+    taskNamingLlmConnectionId: z.string().uuid().nullable().optional(),
   })
   .partial();
 

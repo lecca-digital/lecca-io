@@ -2955,6 +2955,11 @@ body {
   padding-bottom: 7px;
 }
 
+.px-0\.5 {
+  padding-left: 0.125rem;
+  padding-right: 0.125rem;
+}
+
 .pb-1 {
   padding-bottom: 0.25rem;
 }

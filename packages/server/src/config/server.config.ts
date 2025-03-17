@@ -269,7 +269,7 @@ export const ServerConfig = {
   DEFAULT_LLM_PROVIDER: process.env.DEFAULT_LLM_PROVIDER ?? 'openai',
 
   /**
-   * The LLM model used for AI Actions and AI Agents
+   * The language model used for AI Actions and AI Agents
    *
    */
   DEFAULT_LLM_MODEL: process.env.DEFAULT_LLM_MODEL ?? 'gpt-4o',
