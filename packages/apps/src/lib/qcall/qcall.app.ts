@@ -7,7 +7,7 @@ export const qcall = createApp({
   id: 'qcall',
   name: 'QCall - Phone',
   description: `Make phone calls through campaign`,
-  logoUrl: 'https://precallai.s3.ap-south-1.amazonaws.com/qcall.svg',
+  logoUrl: 'https://lecca-io.s3.us-east-2.amazonaws.com/assets/apps/qcall.png',
   actions: [createSegmentContact],
   triggers: [],
   connections: [qCallAIKey],
