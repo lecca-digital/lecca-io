@@ -37,6 +37,7 @@ import { openai } from './lib/openai/openai.app';
 import { paradigmVendo } from './lib/paradigm-vendo/paradigm-vendo.app';
 import { perplexityAi } from './lib/perplexity-ai/perplexity-ai.app';
 import { phone } from './lib/phone/phone.app';
+import { qcall } from './lib/qcall/qcall.app';
 import { pinecone } from './lib/pinecone/pinecone.app';
 import { redo } from './lib/redo/redo.app';
 import { salesRabbit } from './lib/sales-rabbit/sales-rabbit.app';
@@ -92,6 +93,7 @@ const apps: Record<string, ReturnType<typeof createApp>> = {
   [paradigmVendo.id]: paradigmVendo,
   [perplexityAi.id]: perplexityAi,
   [phone.id]: phone,
+  [qcall.id]: qcall,
   [pinecone.id]: pinecone,
   [redo.id]: redo,
   [salesRabbit.id]: salesRabbit,
