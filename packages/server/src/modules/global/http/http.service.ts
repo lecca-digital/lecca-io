@@ -55,7 +55,7 @@ export class HttpService {
         status: error.response?.status || 500,
       });
       throw new HttpException(
-        error.response?.data || 'Request failed',
+        JSON.stringify(error.response?.data || error.message, null, 2),
         error.response?.status || 500,
       );
     }

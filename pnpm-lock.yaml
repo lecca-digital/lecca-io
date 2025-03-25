@@ -60,11 +60,11 @@ importers:
         specifier: ^3.3.4
         version: 3.9.1(react-hook-form@7.54.1(react@18.3.1))
       '@lecca-io/apps':
-        specifier: 0.37.2
-        version: 0.37.2
+        specifier: 0.37.4
+        version: 0.37.4
       '@lecca-io/toolkit':
-        specifier: 0.37.2
-        version: 0.37.2
+        specifier: 0.37.4
+        version: 0.37.4
       '@nestjs/axios':
         specifier: ^3.1.2
         version: 3.1.3(@nestjs/common@10.4.15(class-transformer@0.5.1)(class-validator@0.14.1)(reflect-metadata@0.2.2)(rxjs@7.8.1))(axios@1.7.9)(rxjs@7.8.1)
@@ -2201,11 +2201,11 @@ packages:
     peerDependencies:
       tslib: '2'
 
-  '@lecca-io/apps@0.37.2':
-    resolution: {integrity: sha512-U4TwiAKjApxo1YSR+6QvDfB17Bv9wj5d7giK4peEtyeIWpKsIwJ/cTcUR7syGjUx4nB4xW54wfK2gtHbTymKdQ==}
+  '@lecca-io/apps@0.37.4':
+    resolution: {integrity: sha512-bzU39ctBckFIWRE1do7G2WxyxOqR4mGWdqDHu2YBqzRnAukuUiDXqJVh0gvZlsxIKXmCOqBy1KN05lpbfAB2Vg==}
 
-  '@lecca-io/toolkit@0.37.2':
-    resolution: {integrity: sha512-tT3yEH7oPrTOOw0pkV232T1y+TRp7SwStEUsIwLPIAGB8qTH+0TUN3B6nA10duJX/bdKRLQBfYRvDUjNZe++hw==}
+  '@lecca-io/toolkit@0.37.4':
+    resolution: {integrity: sha512-sIt+aOF4yQt4Dymod+iZo+8hlF6HgfDQ1zSVpl2WBuK2L0KgWQNs1QWBhk4zhXiyJtbcp6L5EoxIuVHe2+cjUA==}
 
   '@leichtgewicht/ip-codec@2.0.5':
     resolution: {integrity: sha512-Vo+PSpZG2/fmgmiNzYK9qWRh8h/CHrwD0mo1h1DzL4yzHNSfWYujGTYsWGreD000gcgmZ7K4Ys6Tx9TxtsKdDw==}
@@ -16092,11 +16092,11 @@ snapshots:
     dependencies:
       tslib: 2.8.1
 
-  '@lecca-io/apps@0.37.2':
+  '@lecca-io/apps@0.37.4':
     dependencies:
-      '@lecca-io/toolkit': 0.37.2
+      '@lecca-io/toolkit': 0.37.4
 
-  '@lecca-io/toolkit@0.37.2':
+  '@lecca-io/toolkit@0.37.4':
     dependencies:
       tslib: 2.8.1
 

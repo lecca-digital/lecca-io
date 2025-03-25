@@ -38,6 +38,7 @@ import { paradigmVendo } from './lib/paradigm-vendo/paradigm-vendo.app';
 import { perplexityAi } from './lib/perplexity-ai/perplexity-ai.app';
 import { phone } from './lib/phone/phone.app';
 import { pinecone } from './lib/pinecone/pinecone.app';
+import { redo } from './lib/redo/redo.app';
 import { salesRabbit } from './lib/sales-rabbit/sales-rabbit.app';
 import { serper } from './lib/serper/serper.app';
 import { slack } from './lib/slack/slack.app';
@@ -92,6 +93,7 @@ const apps: Record<string, ReturnType<typeof createApp>> = {
   [perplexityAi.id]: perplexityAi,
   [phone.id]: phone,
   [pinecone.id]: pinecone,
+  [redo.id]: redo,
   [salesRabbit.id]: salesRabbit,
   [serper.id]: serper,
   [slack.id]: slack,
