@@ -1,3 +1,10 @@
+# [0.38.0](https://github.com/lecca-digital/lecca-io/compare/v0.37.4...v0.38.0) (2025-03-25)
+
+
+### Features
+
+* **apps:** Add Redo integration ([cbd08c5](https://github.com/lecca-digital/lecca-io/commit/cbd08c50860b5d9f2f93a48e256c215eb40695fc))
+
 ## [0.37.4](https://github.com/lecca-digital/lecca-io/compare/v0.37.3...v0.37.4) (2025-02-14)
 
 
