@@ -6,6 +6,7 @@ import { getThreadMessages } from './actions/get-thread-messages.action';
 import { listChannels } from './actions/list-channels.action';
 import { listUsers } from './actions/list-users.action';
 import { replyToMessage } from './actions/reply-to-message.action';
+import { searchMessages } from './actions/search-messages.action';
 import { sendMessageToChannel } from './actions/send-message-to-channel.action';
 import { sendMessageToUser } from './actions/send-message-to-user.action';
 import { slackOAuth2 } from './connections/slack.oauth2';
@@ -22,6 +23,7 @@ export const slack = createApp({
     sendMessageToChannel,
     replyToMessage,
     getThreadMessages,
+    searchMessages,
     createChannel,
     listChannels,
     listUsers,
