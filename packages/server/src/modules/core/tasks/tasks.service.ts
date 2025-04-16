@@ -18,7 +18,7 @@ import {
   generateText,
   streamText,
 } from 'ai';
-import { Message } from 'ai/react';
+import { Message } from 'ai';
 import { z } from 'zod';
 
 import { JwtUser } from '../../../types/jwt-user.type';

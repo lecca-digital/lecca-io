@@ -108,7 +108,6 @@ export function SelectNodeTypeForm({
             ai: { 'ai_action_message-agent': true },
             knowledge: { 'knowledge_action_search-knowledge': true },
             web: { 'web_action_google-search': true },
-            phone: { 'phone_action_make-phone-call': true },
           };
 
           const importantActions: any[] = [];
@@ -305,7 +304,7 @@ export function SelectNodeTypeForm({
           </DropdownMenu.Label>
           <DropdownMenu.Group className="max-h-[calc(40dvh-135px)]">
             {workflowAppsWithAppNameAndIdOnActionsAndTriggers
-              ?.filter((app) => app.id !== 'flow-control' && app.id !== 'ai')
+              ?.filter((app) => app.id !== 'flow-control')
               ?.map((app) => {
                 let items;
                 if (placeholderType === 'trigger') {

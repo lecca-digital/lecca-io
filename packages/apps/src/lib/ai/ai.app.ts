@@ -6,6 +6,7 @@ import { extractWithAi } from './actions/extract-with-ai.action';
 import { listAgents } from './actions/list-agents.action';
 import { messageAgent } from './actions/message-agent.action';
 import { summarizeText } from './actions/summarize-text.action';
+import { think } from './actions/think.action';
 import { translateText } from './actions/translate-text.action';
 
 export const ai = createApp({
@@ -14,6 +15,7 @@ export const ai = createApp({
   description: `Pre-configured AI actions`,
   logoUrl: 'https://lecca-io.s3.us-east-2.amazonaws.com/assets/apps/ai.svg',
   actions: [
+    think,
     messageAgent,
     extractWithAi,
     decideWithAi,
