@@ -1,3 +1,11 @@
+# [0.39.0](https://github.com/lecca-digital/lecca-io/compare/v0.38.0...v0.39.0) (2025-04-16)
+
+
+### Features
+
+* **apps:** Add search messages action for slack ([1882964](https://github.com/lecca-digital/lecca-io/commit/18829642964e0d933b23b63fe1a2268f4991cb4f))
+* **apps:** Add think tool ([a88132f](https://github.com/lecca-digital/lecca-io/commit/a88132ff3b733646e7c88489759549874446c557))
+
 # [0.38.0](https://github.com/lecca-digital/lecca-io/compare/v0.37.4...v0.38.0) (2025-03-25)
 
 
