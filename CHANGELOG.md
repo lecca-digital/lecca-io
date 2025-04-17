@@ -1,3 +1,15 @@
+# [0.40.0](https://github.com/lecca-digital/lecca-io/compare/v0.39.0...v0.40.0) (2025-04-17)
+
+
+### Bug Fixes
+
+* Workflow runs each step one at a time ([6d80c04](https://github.com/lecca-digital/lecca-io/commit/6d80c0472fc5c485e83af97893c4d4418b2c5c26))
+
+
+### Features
+
+* **apps:** Add notion actions and clear knowledge action ([749cb8a](https://github.com/lecca-digital/lecca-io/commit/749cb8afaff6f914c74bd2c33cb869cbac12d7da))
+
 # [0.39.0](https://github.com/lecca-digital/lecca-io/compare/v0.38.0...v0.39.0) (2025-04-16)
 
 
