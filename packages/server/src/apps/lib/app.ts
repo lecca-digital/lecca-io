@@ -75,6 +75,7 @@ export class App {
           availableForAgent: action.availableForAgent,
           run: action.run,
           mockRun: action.mockRun,
+          handleInterruptingResponse: action.handleInterruptingResponse,
           needsConnection: action.needsConnection,
           iconUrl: action.iconUrl,
           viewOptions: action.viewOptions,

@@ -121,19 +121,24 @@ export class WorkflowRunnerService {
         });
 
       if (nodesToRun.length === 0) {
+        // Reload the execution to get the latest nodes
         const executionWithNodes = await this.prisma.execution.findUnique({
           where: {
             id: executionId,
           },
           select: {
             nodes: true,
+            edges: true, // Include edges to help with branch detection
           },
         });
 
+        // Check for any nodes that are not in SUCCESS state
         let needsInputStatusExists = false;
         let scheduledStatusExists = false;
         let failedStatusExists = false;
+        let runningStatusExists = false;
 
+        // Find any nodes that are still in progress in any branch
         (executionWithNodes.nodes as ExecutionNodeForRunner[]).forEach(
           (node) => {
             if (node.executionStatus !== 'SUCCESS') {
@@ -147,6 +152,9 @@ export class WorkflowRunnerService {
                 case 'FAILED':
                   failedStatusExists = true;
                   break;
+                case 'RUNNING':
+                  runningStatusExists = true;
+                  break;
                 default:
                   //success will be determined if there are no needsInputs or scheduled or failed nodes
                   break;
@@ -158,7 +166,8 @@ export class WorkflowRunnerService {
         if (
           needsInputStatusExists ||
           scheduledStatusExists ||
-          failedStatusExists
+          failedStatusExists ||
+          runningStatusExists
         ) {
           if (failedStatusExists) {
             await this.executionService.update({
@@ -184,18 +193,70 @@ export class WorkflowRunnerService {
                 statusMessage: 'Execution scheduled to continue later',
               },
             });
+          } else if (runningStatusExists) {
+            // Keep the execution in running state
+            // This ensures we don't prematurely end execution when nodes are still running
+            await this.executionService.update({
+              executionId: execution.id,
+              data: {
+                status: ExecutionStatus.RUNNING,
+                statusMessage: 'Execution in progress',
+              },
+            });
           }
 
           return;
         } else {
-          await this.executionService.update({
-            executionId: execution.id,
-            data: {
-              status: ExecutionStatus.SUCCESS,
-              stoppedAt: new Date().toISOString(),
-              statusMessage: 'Execution completed successfully',
-            },
+          // Check if there are nodes with SUCCESS status that have no outgoing edges in the execution
+          // These represent branch endpoints that need to be evaluated
+          const edges = executionWithNodes.edges as EdgeForRunner[];
+          const nodes = executionWithNodes.nodes as ExecutionNodeForRunner[];
+          
+          // Find all successful leaf nodes (nodes with no outgoing edges)
+          const successfulLeafNodes = nodes.filter(node => {
+            if (node.executionStatus !== 'SUCCESS') return false;
+            
+            // Check if this node has any outgoing edges
+            const hasOutgoingEdges = edges.some(edge => edge.source === node.id);
+            return !hasOutgoingEdges;
           });
+          
+          // If we have successful leaf nodes, the workflow is complete
+          if (successfulLeafNodes.length > 0) {
+            await this.executionService.update({
+              executionId: execution.id,
+              data: {
+                status: ExecutionStatus.SUCCESS,
+                stoppedAt: new Date().toISOString(),
+                statusMessage: 'Execution completed successfully',
+              },
+            });
+          } else {
+            // This is an unusual state - all nodes are successful but none are leaf nodes
+            // This suggests a potential cycle or an incomplete branch
+            await this.executionService.update({
+              executionId: execution.id,
+              data: {
+                status: ExecutionStatus.RUNNING,
+                statusMessage: 'Execution continuing to process branches',
+              },
+            });
+            
+            // Try to find any nodes that have been executed but might need to continue
+            // This helps recover from conditions where branching might have missed nodes
+            const nodesWithSuccessStatus = nodes.filter(node => 
+              node.executionStatus === 'SUCCESS'
+            ).map(node => node.id);
+            
+            if (nodesWithSuccessStatus.length > 0) {
+              // Attempt to continue execution with all successful nodes
+              await this.#runExecution({
+                executionId,
+                continueFromTheseNodeIds: nodesWithSuccessStatus,
+                isInitialRun: false,
+              });
+            }
+          }
 
           return;
         }
@@ -244,15 +305,19 @@ export class WorkflowRunnerService {
       throw new NotFoundException('No nodes found to run');
     }
 
-    //Find the last nodes in the execution
+    //Find the nodes to continue execution from
     const nodesToContinueExecutionFrom = executionNodes.filter((node) => {
+      // If specific node IDs are provided, use only those nodes
       if (continueFromTheseNodeIds?.length) {
         return continueFromTheseNodeIds.includes(node.id);
       } else {
+        // Otherwise, find nodes that don't have outgoing edges 
+        // or nodes that have a SUCCESS execution status but no next steps yet
         const connectedEdges = executionEdges.filter(
           (edge) => edge.source === node.id,
         );
 
+        // For a clean initial run, use nodes without outgoing edges
         return connectedEdges.length === 0;
       }
     });
@@ -491,23 +556,41 @@ export class WorkflowRunnerService {
       },
     });
 
-    await Promise.all(
-      nodes.map(async (node) => {
-        try {
-          await this.#runNode({ node, execution, type: 'action' });
+    // First, run all nodes to complete their execution
+    for (const node of nodes) {
+      try {
+        await this.#runNode({ node, execution, type: 'action' });
+      } catch {
+        //Okay to catch here. We throw errors to stop the next node from running.
+      }
+    }
 
-          //Recursively call this function to continue running until there are no nodes left to run
-          //Base case is in the if case above where there are no nodes left to run
-          await this.#runExecution({
-            executionId,
-            continueFromTheseNodeIds: [node.id],
-            isInitialRun: false,
-          });
-        } catch {
-          //Okay to catch here. We throw errors to stop the next node from running.
-        }
-      }),
-    );
+    // After all nodes have completed, continue execution for all successful nodes
+    // This ensures branches don't interfere with each other's state
+    const executionAfterNodesRun = await this.#getExecutionForRunner({
+      executionId,
+    });
+
+    const successfulNodeIds = (
+      executionAfterNodesRun.nodes as ExecutionNodeForRunner[]
+    )
+      .filter((node) => {
+        // Only continue from nodes that were just executed and succeeded
+        return (
+          nodes.some((n) => n.id === node.id) &&
+          node.executionStatus === 'SUCCESS'
+        );
+      })
+      .map((node) => node.id);
+
+    if (successfulNodeIds.length > 0) {
+      // Continue execution with all successful nodes
+      await this.#runExecution({
+        executionId,
+        continueFromTheseNodeIds: successfulNodeIds,
+        isInitialRun: false,
+      });
+    }
   }
 
   async #failExecutionAndDisableWorkflow({
