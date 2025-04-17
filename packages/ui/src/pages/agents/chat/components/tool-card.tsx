@@ -12,6 +12,7 @@ import { Workflow } from '../../../../models/workflow/workflow-model';
 import { cn } from '../../../../utils/cn';
 
 import { ToolInfoDialog } from './tool-info-dialog';
+import { toolComponentsMap } from './tools/tool-component-map';
 
 type Props = {
   tool: StreamedTaskAssistantMessageToolInvocation;
@@ -39,6 +40,7 @@ export function MessageToolCard({
   });
 
   const fields = useMemo((): ToolRenderFields => {
+    console.log('processing fields');
     const toolName = tool.toolName;
     const toolType = getToolType({
       toolName: tool.toolName,
@@ -53,6 +55,9 @@ export function MessageToolCard({
     };
 
     switch (toolType) {
+      /**
+       * deprecated
+       */
       case 'workflow':
         toolFields.entity.workflow = workflows?.find(
           (workflow) => workflow.id === toolName.split('workflow-')[1],
@@ -61,6 +66,9 @@ export function MessageToolCard({
         toolFields.name = toolFields.entity.workflow?.name ?? 'workflow';
         toolFields.icon = <Icons.workflow className="size-5" />;
         break;
+      /**
+       * deprecated
+       */
       case 'knowledge':
         toolFields.entity.knowledge = knowledge?.find(
           (k) => k.id === toolName.split('knowledge-')[1],
@@ -69,6 +77,9 @@ export function MessageToolCard({
         toolFields.name = toolFields.entity.knowledge?.name ?? 'knowledge';
         toolFields.icon = <Icons.knowledge className="size-5" />;
         break;
+      /**
+       * deprecated
+       */
       case 'subagent':
         toolFields.entity.subagent = agents?.find(
           (subagent) => subagent.id === toolName.split('subagent-')[1],
@@ -77,6 +88,9 @@ export function MessageToolCard({
         toolFields.name = toolFields.entity.subagent?.name ?? 'sub-agent';
         toolFields.icon = <Icons.messageAgent className="size-5" />;
         break;
+      /**
+       * deprecated
+       */
       case 'action':
         {
           const appId = toolName.split('_action_')[0];
@@ -98,6 +112,9 @@ export function MessageToolCard({
           );
         }
         break;
+      /**
+       * deprecated
+       */
       case 'web':
         {
           const webToolName = toolName.split('web-')[1] as
@@ -121,6 +138,9 @@ export function MessageToolCard({
           }
         }
         break;
+      /**
+       * deprecated
+       */
       case 'phone':
         {
           const phoneToolName = toolName.replace('phone-', '');
@@ -185,6 +205,21 @@ export function MessageToolCard({
     return toolFields;
   }, [agent?.tools, agents, knowledge, mappedApps, tool, workflows]);
 
+  // Extract toolId from toolName
+  const toolId = tool.data?.actionId;
+
+  console.log('tool.data', tool.data);
+  console.log('toolId', toolId);
+  // Check if a component exists for this toolId in the toolComponentsMap
+  const ToolComponent = toolId ? toolComponentsMap[toolId] : undefined;
+  console.log('ToolComponent', ToolComponent);
+
+  // If we have a matching component, render it
+  if (ToolComponent) {
+    return <ToolComponent tool={tool} fields={fields} />;
+  }
+
+  // Otherwise, render the default UI
   return (
     <Dialog>
       <Dialog.Trigger className="group">
@@ -208,7 +243,7 @@ export function MessageToolCard({
   );
 }
 
-function StatusIcon({ status }: { status: ToolStatus }) {
+export function StatusIcon({ status }: { status: ToolStatus }) {
   return (
     <div
       className={cn(
@@ -275,7 +310,7 @@ type ToolType =
   | 'phone'
   | 'tool';
 
-type ToolRenderFields = {
+export type ToolRenderFields = {
   entity: {
     action?: WorkflowAppActionType;
     workflow?: Workflow;
