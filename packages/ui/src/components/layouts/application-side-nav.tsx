@@ -246,19 +246,6 @@ export function AdditionalSideNavContent({
           ),
         },
         {
-          title: 'Community',
-          to: 'https://discord.gg/HVeRFSJMW8',
-          newTab: true,
-          icon: (props: any) => (
-            <img
-              src="/icons/discord.svg"
-              className="size-4"
-              alt="Discord"
-              {...props}
-            />
-          ),
-        },
-        {
           title: 'Settings',
           to: '/workspace-user-account',
           icon: Icons.gear,

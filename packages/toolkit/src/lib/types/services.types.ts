@@ -127,6 +127,10 @@ export type InjectedServices = {
       knowledgeId: string;
       workspaceId: string;
     }) => Promise<boolean>;
+    clearKnowledge: (args: {
+      knowledgeId: string;
+      workspaceId: string;
+    }) => Promise<boolean>;
   };
   notification: {
     create: (args: {

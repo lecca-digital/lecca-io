@@ -352,6 +352,50 @@ export class KnowledgeService {
     return true;
   }
 
+  async clearKnowledge({ knowledgeId, workspaceId }: { knowledgeId: string; workspaceId: string }) {
+    const knowledgeToClear = await this.findOne({
+      knowledgeId,
+      expansion: {
+        indexName: true,
+        vectorRefs: true,
+      },
+      throwNotFoundException: true,
+    });
+
+    // Delete all vector references but keep the notebook structure
+    if (knowledgeToClear.vectorRefs.length) {
+      // Delete all vector ref files from S3
+      await this.s3Manager.deletePath(
+        `workspaces/${workspaceId}/knowledge/${knowledgeId}/vectorRefs`,
+      );
+
+      // Delete all vector refs from database
+      await this.prisma.knowledgeVectorRef.deleteMany({
+        where: {
+          FK_knowledgeId: knowledgeId,
+        },
+      });
+
+      // Delete all vector ref groups that are now empty
+      await this.prisma.knowledgeVectorRefGroup.deleteMany({
+        where: {
+          vectorRefs: {
+            none: {},
+          },
+        },
+      });
+
+      // Delete vectors from Pinecone
+      await this.pineconeService.deleteMany({
+        workspaceId,
+        indexName: knowledgeToClear.indexName,
+        idsToDelete: knowledgeToClear.vectorRefs.map((ref) => ref.id),
+      });
+    }
+
+    return true;
+  }
+
   queryKnowledge = async ({
     query,
     workspaceId,

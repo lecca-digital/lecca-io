@@ -68,11 +68,37 @@ export const shared = {
         });
 
         return pages.results?.map((page) => {
+          // Find the title property by looking for a property with type "title"
+          const properties = (page as any).properties || {};
+          let pageTitle = '-';
+
+          try {
+            // Look for the property with type "title" - this is the most reliable approach
+            const titlePropertyEntry = Object.entries(properties).find(
+              ([_, prop]: [string, any]) => prop.type === 'title',
+            ) as any;
+
+            if (titlePropertyEntry) {
+              const [propName, titleProp] = titlePropertyEntry;
+              if (
+                titleProp.title &&
+                Array.isArray(titleProp.title) &&
+                titleProp.title.length > 0
+              ) {
+                // Try getting plain_text first, then fall back to text.content
+                pageTitle =
+                  titleProp.title[0]?.plain_text ||
+                  titleProp.title[0]?.text?.content ||
+                  `[${propName}]` || // Show property name as fallback
+                  '-';
+              }
+            }
+          } catch (error) {
+            console.error('Error extracting page title:', error);
+          }
+
           return {
-            label:
-              (page as any).properties.Name?.title[0]?.plain_text ??
-              (page as any).properties.title?.title[0]?.text?.content ??
-              '-',
+            label: pageTitle,
             value: page.id,
           };
         });
@@ -158,11 +184,37 @@ export const shared = {
         });
 
         return pages.results?.map((page) => {
+          // Find the title property by looking for a property with type "title"
+          const properties = (page as any).properties || {};
+          let pageTitle = '-';
+
+          try {
+            // Look for the property with type "title" - this is the most reliable approach
+            const titlePropertyEntry = Object.entries(properties).find(
+              ([_, prop]: [string, any]) => prop.type === 'title',
+            ) as any;
+
+            if (titlePropertyEntry) {
+              const [propName, titleProp] = titlePropertyEntry;
+              if (
+                titleProp.title &&
+                Array.isArray(titleProp.title) &&
+                titleProp.title.length > 0
+              ) {
+                // Try getting plain_text first, then fall back to text.content
+                pageTitle =
+                  titleProp.title[0]?.plain_text ||
+                  titleProp.title[0]?.text?.content ||
+                  `[${propName}]` || // Show property name as fallback
+                  '-';
+              }
+            }
+          } catch (error) {
+            console.error('Error extracting page title:', error);
+          }
+
           return {
-            label:
-              (page as any).properties.Name?.title[0]?.plain_text ??
-              (page as any).properties.title?.title[0]?.text?.content ??
-              '-',
+            label: pageTitle,
             value: page.id,
           };
         });
@@ -296,6 +348,120 @@ export const shared = {
       auth: accessToken,
     });
     return notion;
+  },
+  extractTextFromBlocks: async (
+    blocks: any[],
+    notionLib: any,
+  ): Promise<string> => {
+    if (!blocks || blocks.length === 0) {
+      return '';
+    }
+
+    let textContent = '';
+
+    for (const block of blocks) {
+      if (!block || !block.type) {
+        continue;
+      }
+
+      try {
+        // Extract text based on block type
+        const blockContent = block[block.type];
+        if (!blockContent) {
+          continue;
+        }
+
+        // Most block types have a 'rich_text' property but some have 'text'
+        const richTextArray = blockContent.rich_text || blockContent.text;
+
+        if (richTextArray && Array.isArray(richTextArray)) {
+          let extractedText = '';
+
+          // Extract text from the rich text array
+          for (const item of richTextArray) {
+            if (item && item.plain_text) {
+              extractedText += item.plain_text;
+            } else if (item && item.text && item.text.content) {
+              extractedText += item.text.content;
+            }
+          }
+
+          // Format the extracted text based on block type
+          switch (block.type) {
+            case 'paragraph':
+              textContent += extractedText + '\n\n';
+              break;
+            case 'heading_1':
+              textContent += extractedText + '\n\n';
+              break;
+            case 'heading_2':
+              textContent += extractedText + '\n\n';
+              break;
+            case 'heading_3':
+              textContent += extractedText + '\n\n';
+              break;
+            case 'bulleted_list_item':
+              textContent += '• ' + extractedText + '\n';
+              break;
+            case 'numbered_list_item':
+              textContent += '1. ' + extractedText + '\n';
+              break;
+            case 'to_do': {
+              const checkbox = blockContent.checked ? '[x]' : '[ ]';
+              textContent += checkbox + ' ' + extractedText + '\n';
+              break;
+            }
+            case 'toggle':
+              textContent += extractedText + '\n';
+              break;
+            case 'code':
+              textContent += '```' + (blockContent.language || '') + '\n';
+              textContent += extractedText + '\n';
+              textContent += '```\n\n';
+              break;
+            case 'quote':
+              textContent += '> ' + extractedText + '\n\n';
+              break;
+            case 'callout':
+              textContent += extractedText + '\n\n';
+              break;
+            case 'divider':
+              textContent += '---\n\n';
+              break;
+            case 'table_of_contents':
+              textContent += '[Table of Contents]\n\n';
+              break;
+            default:
+              // For any other block types
+              if (extractedText) {
+                textContent += extractedText + '\n';
+              }
+          }
+        }
+      } catch (error) {
+        console.error(`Error processing block of type ${block.type}:`, error);
+      }
+
+      // Check if block has children and recursively get their text
+      if (block.has_children) {
+        try {
+          const childBlocks = await notionLib.blocks.children.list({
+            block_id: block.id,
+          });
+
+          if (childBlocks && childBlocks.results) {
+            textContent += await shared.extractTextFromBlocks(
+              childBlocks.results,
+              notionLib,
+            );
+          }
+        } catch (error) {
+          console.error(`Error fetching child blocks for ${block.id}:`, error);
+        }
+      }
+    }
+
+    return textContent;
   },
 };
 

@@ -39,7 +39,7 @@ export class AuthController {
    * Standard login with email and password.
    * Provides the user with access and refresh tokens.
    */
-  @Throttle({ default: { limit: 4, ttl: 60 * 1000 } })
+  @Throttle({ default: { limit: 10, ttl: 60 * 1000 } })
   @Post('login')
   async standardLogin(@Body() body: StandardLoginDto) {
     const user = await this.authService.retrieveValidUserByEmailAndPassword(
@@ -55,7 +55,7 @@ export class AuthController {
    * This will create a new user if the user does not exist.
    * Provides the user with access and refresh tokens.
    */
-  @Throttle({ default: { limit: 4, ttl: 60 * 1000 } })
+  @Throttle({ default: { limit: 10, ttl: 60 * 1000 } })
   @Post('login-with-google')
   async googleLogin(@Body() body: GoogleLoginDto, @Res() res: Response) {
     const user = await this.authService.findOrCreateUserByGoogleToken({
@@ -74,7 +74,7 @@ export class AuthController {
    * Logging in with google returns a hidden token on the redirect.
    * The client then needs to send that hidden token for access and refresh tokens.
    */
-  @Throttle({ default: { limit: 4, ttl: 60 * 1000 } })
+  @Throttle({ default: { limit: 10, ttl: 60 * 1000 } })
   @Post('login-with-token')
   async loginWithToken(@Body() body: VerifyTokenDto) {
     const decodedToken = await this.authService.decodeToken(body.token);
@@ -97,7 +97,7 @@ export class AuthController {
    * The client will need to use the token in the link to fetch
    * the access and refresh tokens.
    */
-  @Throttle({ default: { limit: 4, ttl: 60 * 1000 } })
+  @Throttle({ default: { limit: 10, ttl: 60 * 1000 } })
   @Post('signup')
   async standardSignup(@Body() body: CreateUserDto) {
     const user = await this.userService.create({
@@ -131,7 +131,7 @@ export class AuthController {
   /**
    * Refreshes access token using a refresh token
    */
-  @Throttle({ default: { limit: 4, ttl: 60 * 1000 } })
+  @Throttle({ default: { limit: 10, ttl: 60 * 1000 } })
   @Post('refresh-token')
   async refreshAccessToken(@Body() data: RefreshTokenDto) {
     return await this.authService.refreshAccessToken(data.refreshToken);
@@ -140,7 +140,7 @@ export class AuthController {
   /**
    * Sends an email with a verification token (6 digits)
    */
-  @Throttle({ default: { limit: 4, ttl: 60 * 1000 } })
+  @Throttle({ default: { limit: 10, ttl: 60 * 1000 } })
   @Post('resend-email-verification')
   async sendVerificationEmail(@Body() body: SendVerificationEmailDto) {
     const user = await this.authService.retrieveValidUserByEmail(
@@ -154,7 +154,7 @@ export class AuthController {
   /**
    * Verifies the email verification token
    */
-  @Throttle({ default: { limit: 4, ttl: 60 * 1000 } })
+  @Throttle({ default: { limit: 10, ttl: 60 * 1000 } })
   @Post('validate-email-verification-token')
   async validateVerificationToken(
     @Body() body: ValidateEmailVerificationTokenDto,
@@ -171,13 +171,13 @@ export class AuthController {
   /**
    * Sends a forgot password email with a link to reset the password
    */
-  @Throttle({ default: { limit: 4, ttl: 60 * 1000 } })
+  @Throttle({ default: { limit: 10, ttl: 60 * 1000 } })
   @Post('send-forgot-password-email')
   async sendForgotPasswordEmail(@Body() body: SendForgotPasswordEmailDto) {
     return this.authService.sendForgotPasswordEmail(body.email);
   }
 
-  @Throttle({ default: { limit: 4, ttl: 60 * 1000 } })
+  @Throttle({ default: { limit: 10, ttl: 60 * 1000 } })
   @Post('reset-password')
   async resetPassword(@Body() body: ResetPasswordDto) {
     return this.authService.resetPassword({

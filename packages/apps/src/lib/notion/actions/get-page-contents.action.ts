@@ -3,31 +3,31 @@ import { z } from 'zod';
 
 import { shared } from '../shared/notion.shared';
 
-export const getPage = createAction({
+export const getPageContents = createAction({
   id: 'notion_action_get-page',
   name: 'Get Page Contents',
   description: "Fetches a page's contents",
   inputConfig: [shared.fields.dynamicSelectPage],
   aiSchema: z.object({
-    pageId: z.string().describe('The ID of the page to retrieve.'),
+    page: z.string().describe('The ID of the page to retrieve.'),
   }),
   run: async ({ connection, configValue }): Promise<any> => {
-    const { pageId } = configValue;
+    const { page } = configValue;
 
     const notionLib = shared.notionLib({
       accessToken: connection.accessToken,
     });
 
     // Fetch page metadata
-    const page = await notionLib.pages.retrieve({ page_id: pageId });
+    const pageResponse = await notionLib.pages.retrieve({ page_id: page });
 
     // Fetch page content (blocks)
     const blockChildren = await notionLib.blocks.children.list({
-      block_id: pageId,
+      block_id: page,
     });
 
     return {
-      page,
+      page: pageResponse,
       content: blockChildren.results,
     };
   },
