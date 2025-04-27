@@ -1,0 +1,43 @@
+name: Close Stale Claude PRs
+
+on:
+  schedule:
+    - cron: '0 3 * * *' # Every day at 3 AM UTC
+  workflow_dispatch: # Allow manual trigger too
+
+permissions:
+  pull-requests: write
+
+jobs:
+  close-stale-prs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Close stale Claude Code PRs
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const { data: pulls } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+            });
+
+            const now = new Date();
+            const cutoffDays = 7; // <-- How many days old before closing
+
+            for (const pr of pulls) {
+              const createdAt = new Date(pr.created_at);
+              const ageInDays = (now - createdAt) / (1000 * 60 * 60 * 24);
+
+              const hasClaudeLabel = pr.labels.some(label => label.name === 'claude-code');
+
+              if (hasClaudeLabel && ageInDays > cutoffDays) {
+                console.log(`Closing stale PR: ${pr.number}`);
+                await github.rest.pulls.update({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: pr.number,
+                  state: 'closed',
+                });
+              }
+            }
