@@ -39,6 +39,7 @@ import { perplexityAi } from './lib/perplexity-ai/perplexity-ai.app';
 import { phone } from './lib/phone/phone.app';
 import { qcall } from './lib/qcall/qcall.app';
 import { pinecone } from './lib/pinecone/pinecone.app';
+import { qdrant } from './lib/qdrant/qdrant.app';
 import { redo } from './lib/redo/redo.app';
 import { salesRabbit } from './lib/sales-rabbit/sales-rabbit.app';
 import { serper } from './lib/serper/serper.app';
@@ -95,6 +96,7 @@ const apps: Record<string, ReturnType<typeof createApp>> = {
   [phone.id]: phone,
   [qcall.id]: qcall,
   [pinecone.id]: pinecone,
+  [qdrant.id]: qdrant,
   [redo.id]: redo,
   [salesRabbit.id]: salesRabbit,
   [serper.id]: serper,

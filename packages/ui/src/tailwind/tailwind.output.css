@@ -2556,10 +2556,6 @@ body {
   border-top-color: transparent;
 }
 
-.border-b-foreground\/10 {
-  border-bottom-color: hsl(var(--foreground) / 0.1);
-}
-
 .\!bg-background {
   background-color: hsl(var(--background)) !important;
 }
@@ -2734,11 +2730,6 @@ body {
   background-color: rgb(234 179 8 / var(--tw-bg-opacity));
 }
 
-.bg-blue-500 {
-  --tw-bg-opacity: 1;
-  background-color: rgb(59 130 246 / var(--tw-bg-opacity));
-}
-
 .bg-gradient-to-r {
   background-image: linear-gradient(to right, var(--tw-gradient-stops));
 }
@@ -2845,12 +2836,12 @@ body {
   padding: 1.5rem;
 }
 
-.p-\[1px\] {
-  padding: 1px;
-}
-
 .p-8 {
   padding: 2rem;
+}
+
+.p-\[1px\] {
+  padding: 1px;
 }
 
 .\!py-2 {
@@ -3106,10 +3097,6 @@ body {
 
 .pt-8 {
   padding-top: 2rem;
-}
-
-.pb-0 {
-  padding-bottom: 0px;
 }
 
 .text-left {
