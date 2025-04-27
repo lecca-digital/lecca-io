@@ -1,0 +1,13 @@
+#!/usr/bin/expect -f
+set timeout -1
+
+# Read the environment variable PROMPT_INPUT
+set prompt $env(PROMPT_INPUT)
+
+# Spawn the claude command with the dynamic prompt
+spawn claude "### Do not ask for permission any questions. I cannot respond. You must make all decisions yourself. You can use any tool you think you need to use. $prompt" --allowedTools "Bash(*)" --dangerously-skip-permissions
+
+# Wait for the beginning of output, then send Ctrl+D to end
+expect "^"
+send "\x04"
+expect eof
