@@ -2,7 +2,7 @@ import { createAction, createTextInputField } from '@lecca-io/toolkit';
 import { z } from 'zod';
 
 export const think = createAction({
-  id: 'ai_action_think',
+  id: 'agent_action_think',
   name: 'Think',
   description:
     'Use the tool to think about something. It will not obtain new information, but just append the thought to the log.',

@@ -13,9 +13,11 @@ import { csv } from './lib/csv/csv.app';
 import { date } from './lib/date/date.app';
 import { deepseek } from './lib/deepseek/deepseek.app';
 import { dropbox } from './lib/dropbox/dropbox.app';
+import { file } from './lib/file/file.app';
 import { firecrawl } from './lib/firecrawl/firecrawl.app';
 import { flowControl } from './lib/flow-control/flow-control.app';
 import { gemini } from './lib/gemini/gemini.app';
+import { github } from './lib/github/github.app';
 import { gmail } from './lib/gmail/gmail.app';
 import { googleCalendar } from './lib/google-calendar/google-calendar.app';
 import { googleContacts } from './lib/google-contacts/google-contacts.app';
@@ -37,8 +39,8 @@ import { openai } from './lib/openai/openai.app';
 import { paradigmVendo } from './lib/paradigm-vendo/paradigm-vendo.app';
 import { perplexityAi } from './lib/perplexity-ai/perplexity-ai.app';
 import { phone } from './lib/phone/phone.app';
-import { qcall } from './lib/qcall/qcall.app';
 import { pinecone } from './lib/pinecone/pinecone.app';
+import { qcall } from './lib/qcall/qcall.app';
 import { redo } from './lib/redo/redo.app';
 import { salesRabbit } from './lib/sales-rabbit/sales-rabbit.app';
 import { serper } from './lib/serper/serper.app';
@@ -69,9 +71,11 @@ const apps: Record<string, ReturnType<typeof createApp>> = {
   [date.id]: date,
   [deepseek.id]: deepseek,
   [dropbox.id]: dropbox,
+  [file.id]: file,
   [firecrawl.id]: firecrawl,
   [flowControl.id]: flowControl,
   [gemini.id]: gemini,
+  [github.id]: github,
   [gmail.id]: gmail,
   [googleCalendar.id]: googleCalendar,
   [googleContacts.id]: googleContacts,

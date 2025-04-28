@@ -30,6 +30,7 @@ export class HttpService {
     headers?: AxiosRequestConfig['headers'];
     params?: AxiosRequestConfig['params'];
     data?: AxiosRequestConfig['data'];
+    responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream';
     /**
      * For logging purposes
      */
@@ -45,6 +46,7 @@ export class HttpService {
           ...options.headers,
         },
         data: options.data,
+        responseType: options.responseType,
       });
       return response;
     } catch (error) {

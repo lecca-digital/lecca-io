@@ -263,9 +263,24 @@ export class OAuth2Connection extends Connection {
       workspaceId: undefined, //We could track when they authenticate, but not gonna worry about this now
     });
 
-    const { access_token, refresh_token, ...metadata } = result.data;
+    let tokenData = result.data;
 
-    if (result.data.access_token) {
+    if (
+      typeof result.data === 'string' &&
+      result.data.includes('access_token=')
+    ) {
+      // Handle GitHub's URL-encoded response format
+      // There may be other auth flows that return a string.
+      const params = new URLSearchParams(result.data);
+      tokenData = {};
+      for (const [key, value] of params.entries()) {
+        tokenData[key] = value;
+      }
+    }
+
+    const { access_token, refresh_token, ...metadata } = tokenData;
+
+    if (access_token) {
       return await this.connectOAuth2App({
         res: args.res,
         state,

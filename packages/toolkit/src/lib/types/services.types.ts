@@ -228,6 +228,7 @@ type HttpRequestArgs = {
   headers?: AxiosRequestConfig['headers'];
   params?: AxiosRequestConfig['params'];
   data?: AxiosRequestConfig['data'];
+  responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream';
   /**
    * For logging purposes
    */

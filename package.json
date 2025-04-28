@@ -119,6 +119,7 @@
     "googleapis": "^144.0.0",
     "input-otp": "^1.2.4",
     "jsonrepair": "^3.10.0",
+    "jszip": "^3.10.1",
     "luxon": "^3.5.0",
     "mammoth": "^1.8.0",
     "mathjs": "^14.0.0",
