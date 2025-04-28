@@ -1,3 +1,11 @@
+# [0.41.0](https://github.com/lecca-digital/lecca-io/compare/v0.40.0...v0.41.0) (2025-04-28)
+
+
+### Features
+
+* Add claude-pr-generator as workflow to be dispatched ([dded7de](https://github.com/lecca-digital/lecca-io/commit/dded7de46e302b292db7c0b514abde9a47c4f53b))
+* **apps:** Add github actions and text file reader ([5d8af8d](https://github.com/lecca-digital/lecca-io/commit/5d8af8d715c7aa1a83ad267deb9301b474667a1d))
+
 # [0.40.0](https://github.com/lecca-digital/lecca-io/compare/v0.39.0...v0.40.0) (2025-04-17)
 
 
