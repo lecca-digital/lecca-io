@@ -78,8 +78,60 @@ export const shared = {
           return [];
         }
 
-        // Get repositories for the selected owner
-        const reposUrl = `https://api.github.com/users/${owner}/repos?sort=updated&per_page=100`;
+        // First, get the authenticated user to check if we're working with the user's own repos
+        const userUrl = 'https://api.github.com/user';
+        const userResult = await http.request({
+          method: 'GET',
+          url: userUrl,
+          headers: {
+            Authorization: `Bearer ${connection.accessToken}`,
+            Accept: 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28',
+          },
+          workspaceId,
+        });
+
+        if (userResult.status !== 200) {
+          throw new Error(`Failed to fetch user data: ${userResult.status}`);
+        }
+
+        const user = userResult.data;
+        let reposUrl;
+
+        // Use different endpoints based on whether we're listing for the authenticated user or not
+        if (user.login === owner) {
+          // For the authenticated user, use /user/repos to get all repositories including private ones
+          reposUrl = 'https://api.github.com/user/repos?sort=updated&per_page=100';
+        } else {
+          // Check if owner is an organization by making a request to the orgs endpoint
+          const orgsUrl = 'https://api.github.com/user/orgs';
+          const orgsResult = await http.request({
+            method: 'GET',
+            url: orgsUrl,
+            headers: {
+              Authorization: `Bearer ${connection.accessToken}`,
+              Accept: 'application/vnd.github+json',
+              'X-GitHub-Api-Version': '2022-11-28',
+            },
+            workspaceId,
+          });
+
+          if (orgsResult.status !== 200) {
+            throw new Error(`Failed to fetch user organizations: ${orgsResult.status}`);
+          }
+
+          // Check if the owner is one of the user's organizations
+          const isOrg = orgsResult.data.some(org => org.login === owner);
+          
+          if (isOrg) {
+            // For organizations, use /orgs/{org}/repos to get all accessible repositories
+            reposUrl = `https://api.github.com/orgs/${owner}/repos?sort=updated&per_page=100`;
+          } else {
+            // For other users, use /users/{username}/repos (this will only return public repos)
+            reposUrl = `https://api.github.com/users/${owner}/repos?sort=updated&per_page=100`;
+          }
+        }
+
         const reposResult = await http.request({
           method: 'GET',
           url: reposUrl,
@@ -113,7 +165,6 @@ export const shared = {
         dependsOn: ['owner'],
       },
     }),
-
     dynamicSelectRepositoryWorkflows: createDynamicSelectInputField({
       id: 'workflowId',
       label: 'Workflow',

@@ -2,6 +2,7 @@ import { createApp } from '@lecca-io/toolkit';
 
 import { createWorkflowDispatchEvent } from './actions/create-workflow-dispatch-event.action';
 import { downloadArtifacts } from './actions/download-artifacts.action';
+import { listRepositories } from './actions/list-repositories.action';
 import { listRepositoryWorkflows } from './actions/list-repository-workflows.action';
 import { githubOAuth2 } from './connections/github.oauth2';
 
@@ -14,6 +15,7 @@ export const github = createApp({
   actions: [
     createWorkflowDispatchEvent,
     downloadArtifacts,
+    listRepositories,
     listRepositoryWorkflows,
   ],
   triggers: [],
