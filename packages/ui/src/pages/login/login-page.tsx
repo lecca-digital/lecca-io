@@ -61,7 +61,7 @@ export default function LoginPage() {
           'absolute right-4 top-4 md:right-8 md:top-8',
         )}
       >
-        Signup
+        Create Account
       </Link>
       <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
         <div className="flex flex-col items-center space-y-2 text-center">
