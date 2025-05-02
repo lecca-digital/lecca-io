@@ -13,6 +13,7 @@ import { csv } from './lib/csv/csv.app';
 import { date } from './lib/date/date.app';
 import { deepseek } from './lib/deepseek/deepseek.app';
 import { dropbox } from './lib/dropbox/dropbox.app';
+import { figma } from './lib/figma/figma.app';
 import { file } from './lib/file/file.app';
 import { firecrawl } from './lib/firecrawl/firecrawl.app';
 import { flowControl } from './lib/flow-control/flow-control.app';
@@ -29,6 +30,7 @@ import { googleSlides } from './lib/google-slides/google-slides.app';
 import { hubspot } from './lib/hubspot/hubspot.app';
 import { json } from './lib/json/json.app';
 import { knowledge } from './lib/knowledge/knowledge.app';
+import { linear } from './lib/linear/linear.app';
 import { linkedin } from './lib/linkedin/linkedin.app';
 import { list } from './lib/list/list.app';
 import { math } from './lib/math/math.app';
@@ -71,6 +73,7 @@ const apps: Record<string, ReturnType<typeof createApp>> = {
   [date.id]: date,
   [deepseek.id]: deepseek,
   [dropbox.id]: dropbox,
+  [figma.id]: figma,
   [file.id]: file,
   [firecrawl.id]: firecrawl,
   [flowControl.id]: flowControl,
@@ -87,6 +90,7 @@ const apps: Record<string, ReturnType<typeof createApp>> = {
   [hubspot.id]: hubspot,
   [json.id]: json,
   [knowledge.id]: knowledge,
+  [linear.id]: linear,
   [linkedin.id]: linkedin,
   [list.id]: list,
   [math.id]: math,
