@@ -1,3 +1,10 @@
+# [0.43.0](https://github.com/lecca-digital/lecca-io/compare/v0.42.0...v0.43.0) (2025-05-03)
+
+
+### Features
+
+* **apps:** Linear webhook triggers and afterTokenExchange method for retrieving metadata ([1dd1a23](https://github.com/lecca-digital/lecca-io/commit/1dd1a2305b7f3ed525841574d6a01238d75188f3))
+
 # [0.42.0](https://github.com/lecca-digital/lecca-io/compare/v0.41.0...v0.42.0) (2025-05-02)
 
 
