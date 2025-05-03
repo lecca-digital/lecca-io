@@ -1,3 +1,11 @@
+# [0.42.0](https://github.com/lecca-digital/lecca-io/compare/v0.41.0...v0.42.0) (2025-05-02)
+
+
+### Features
+
+* **apps:** Add figma and linear integrations ([348a9b1](https://github.com/lecca-digital/lecca-io/commit/348a9b122ee77d3f06e54c923f73c48884b7ae47))
+* **apps:** Add list-repositories.action.ts to github and list private repos ([1f431c2](https://github.com/lecca-digital/lecca-io/commit/1f431c288a847102f7836d02b40535ce1c0beae8))
+
 # [0.41.0](https://github.com/lecca-digital/lecca-io/compare/v0.40.0...v0.41.0) (2025-04-28)
 
 
