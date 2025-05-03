@@ -2,22 +2,21 @@ import { createAppWebhookTrigger } from '@lecca-io/toolkit';
 
 import { shared } from '../shared/slack.shared';
 
-export const newMessage = createAppWebhookTrigger<
+export const directMessage = createAppWebhookTrigger<
   {
-    channelId: string;
     userId: string;
   },
   any,
   any
 >({
-  id: 'slack_trigger_new-message',
-  name: 'New Message',
+  id: 'slack_trigger_direct-message',
+  name: 'Direct Message',
   eventType: 'message',
-  description: 'Triggered when a new message is sent in a channel.',
+  description: 'Triggered when a direct message is sent to the bot.',
   inputConfig: [
     {
       ...shared.fields.dynamicSelectUser,
-      description: 'Filter by user that sent the message.',
+      description: 'Filter by user that sent the direct message.',
       selectOptions: [
         {
           label: 'Anyone',
@@ -26,18 +25,6 @@ export const newMessage = createAppWebhookTrigger<
       ],
       defaultValue: 'any',
       label: 'Filter by User',
-    },
-    {
-      ...shared.fields.dynamicSelectChannel,
-      description: 'Filter by channel where the message was sent.',
-      selectOptions: [
-        {
-          label: 'Any Channel',
-          value: 'any',
-        },
-      ],
-      defaultValue: 'any',
-      label: 'Filter by Channel',
     },
   ],
   webhookPayloadMatchesIdentifier: ({ webhookBody, connectionMetadata }) => {
@@ -48,21 +35,15 @@ export const newMessage = createAppWebhookTrigger<
     }
   },
   run: async ({ inputData, configValue }) => {
-    // Filter out direct messages - those will be handled by directMessage trigger
-    if (inputData?.body?.event?.channel_type === 'im') {
-      return [];
-    }
-    
-    if (
-      configValue.userId !== 'any' &&
-      inputData?.body?.event?.user !== configValue.userId
-    ) {
+    // Check if this is a direct message (channel_type: 'im')
+    if (inputData?.body?.event?.channel_type !== 'im') {
       return [];
     }
 
+    // Apply user filter if specified
     if (
-      configValue.channelId !== 'any' &&
-      inputData?.body?.event?.channel !== configValue.channelId
+      configValue.userId !== 'any' &&
+      inputData?.body?.event?.user !== configValue.userId
     ) {
       return [];
     }
@@ -85,12 +66,12 @@ const mock = {
       type: 'message',
       ts: '0000000000.000000',
       client_msg_id: 'client-msg-id',
-      text: 'Message Text',
+      text: 'Direct Message Text',
       team: 'team-id',
       blocks: [] as any,
-      channel: 'channel-id',
+      channel: 'DM-channel-id', 
       event_ts: '0000000000.000000',
-      channel_type: 'channel',
+      channel_type: 'im',
     },
     type: 'event_callback',
     event_id: 'event-id',
