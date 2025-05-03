@@ -1,8 +1,14 @@
 import { createApp } from '@lecca-io/toolkit';
 import crypto from 'crypto';
 
+import { addLabelToIssue } from './actions/add-label-to-issue.action';
 import { createComment } from './actions/create-comment.action';
+import { getLabel } from './actions/get-label.action';
+import { listLabelGroups } from './actions/list-label-groups.action';
+import { listLabels } from './actions/list-labels.action';
+import { listTeams } from './actions/list-teams.action';
 import { linearOAuth2 } from './connections/linear.oauth2';
+import { labeledIssue } from './triggers/labeled-issue.trigger';
 import { newIssue } from './triggers/new-issue.trigger';
 import { removedIssue } from './triggers/removed-issue.trigger';
 import { updatedIssue } from './triggers/updated-issue.trigger';
@@ -13,8 +19,8 @@ export const linear = createApp({
   description:
     'Linear is an issue tracking tool built for high-performance teams.',
   logoUrl: 'https://lecca-io.s3.us-east-2.amazonaws.com/assets/apps/linear.svg',
-  actions: [createComment],
-  triggers: [newIssue, updatedIssue, removedIssue],
+  actions: [createComment, getLabel, addLabelToIssue, listLabelGroups, listLabels, listTeams],
+  triggers: [newIssue, updatedIssue, removedIssue, labeledIssue],
   connections: [linearOAuth2],
   verifyWebhookRequest: ({ webhookBody, webhookHeaders }) => {
     if (!process.env.INTEGRATION_LINEAR_SIGNING_SECRET) {
@@ -48,11 +54,13 @@ export const linear = createApp({
 
     // Linear webhook event types are formatted as {type}.{action}
     // For example: Issue.create, Issue.update, etc.
+    const event =
+      webhookBody?.type && webhookBody?.action
+        ? `${webhookBody.type}.${webhookBody.action}`
+        : '';
+
     return {
-      event:
-        webhookBody?.type && webhookBody?.action
-          ? `${webhookBody.type}.${webhookBody.action}`
-          : '',
+      event,
     };
   },
 });
