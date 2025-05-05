@@ -52,7 +52,9 @@ jobs:
       - name: Run Claude Code with Prompt
         run: |
           export ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }}
-          claude -p "Do not ask for permission or any questions. I cannot respond. You must make all decisions yourself. You can use any tool you think you need to use. ${{ github.event.inputs.prompt }}" --allowedTools "Bash(*)" Edit Write
+          claude -p - --allowedTools "Bash(*)" Edit Write << 'EOF'
+Do not ask for permission or any questions. I cannot respond. You must make all decisions yourself. You can use any tool you think you need to use. ${{ github.event.inputs.prompt }}
+EOF
 
       - name: Push changes
         run: |
