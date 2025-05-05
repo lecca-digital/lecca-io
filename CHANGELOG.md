@@ -1,3 +1,16 @@
+# [0.45.0](https://github.com/lecca-digital/lecca-io/compare/v0.44.0...v0.45.0) (2025-05-05)
+
+
+### Bug Fixes
+
+* Json Parse ([d38b2ce](https://github.com/lecca-digital/lecca-io/commit/d38b2ce827f118317129cb3d26b9623982b7d37b))
+
+
+### Features
+
+* **apps:** Add direct-message trigger to slack ([68db305](https://github.com/lecca-digital/lecca-io/commit/68db305e32ad12db3369dd4bf18bfd19ebe47cac))
+* **apps:** Add linear get issue action ([9deff3a](https://github.com/lecca-digital/lecca-io/commit/9deff3a694ffa9c0f5e378be2bf2ce66581fafc5))
+
 # [0.44.0](https://github.com/lecca-digital/lecca-io/compare/v0.43.0...v0.44.0) (2025-05-03)
 
 
