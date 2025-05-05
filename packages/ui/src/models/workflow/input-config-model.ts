@@ -19,6 +19,7 @@ export const UNIQUE_INPUT_TYPES = [
   'markdown',
   'dynamic-workflow-webhook-url',
   'conditional-paths',
+  'ab-test-paths',
   'resume-execution',
   'decide-paths',
   'config-builder',

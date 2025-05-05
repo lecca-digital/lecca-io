@@ -23,6 +23,9 @@ export const INPUT_TYPES = [
   // A unique input that lets the user create conditional paths dictated by the edges connected to the node.
   'conditional-paths',
 
+  // A unique input that lets the user create A/B test paths with percentage splits.
+  'ab-test-paths',
+
   //Similar to conditional-paths, but an action must be selected by a user or AI.
   'decide-paths',
 
