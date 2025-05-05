@@ -1,5 +1,6 @@
 import { createApp } from '@lecca-io/toolkit';
 
+import { abTestPaths } from './actions/ab-test-paths.action';
 import { conditionalPaths } from './actions/conditional-paths.action';
 import { getCustomInput } from './actions/get-custom-input.action';
 import { manuallyDecidePaths } from './actions/manually-decide-path.action';
@@ -7,6 +8,7 @@ import { outputWorkflowData } from './actions/output-workflow-data.action';
 import { pause } from './actions/pause.action';
 import { runWorkflow } from './actions/run-workflow.action';
 import { schedule } from './actions/schedule.action';
+import { viewAbTestResults } from './actions/view-ab-test-results.action';
 import { wait } from './actions/wait.action';
 import { listenForWebhook } from './triggers/listen-for-webhook.trigger';
 import { manualTrigger } from './triggers/manual-trigger.trigger';
@@ -22,6 +24,8 @@ export const flowControl = createApp({
     getCustomInput,
     manuallyDecidePaths,
     conditionalPaths,
+    abTestPaths,
+    viewAbTestResults,
     runWorkflow,
     outputWorkflowData,
     schedule,
