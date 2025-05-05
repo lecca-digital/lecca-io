@@ -30,6 +30,7 @@ import { CustomInputConfigFormFields } from '../manually-start-trigger-node';
 import { ConditionalPathsFormFields } from './conditional-paths-form-fields';
 import { ConfigBuilderFormField } from './config-builder-form-field';
 import { DecidePathsFormFields } from './decide-paths-form-fields';
+import { PercentageSplitsFormFields } from './percentage-splits-form-fields';
 import { ResumeExecutionFormField } from './resume-execution-form-field';
 import { SharedLabelAndTooltip } from './shared-label-and-tooltip';
 
@@ -1415,6 +1416,18 @@ function DynamicFormItem({
         case 'conditional-paths': {
           return (
             <ConditionalPathsFormFields
+              node={node}
+              form={form}
+              fieldConfig={fieldConfig}
+              readonly={readOnly}
+              projectId={projectId}
+              agentId={agentId}
+            />
+          );
+        }
+        case 'percentage-splits': {
+          return (
+            <PercentageSplitsFormFields
               node={node}
               form={form}
               fieldConfig={fieldConfig}
