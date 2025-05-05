@@ -1,3 +1,10 @@
+# [0.44.0](https://github.com/lecca-digital/lecca-io/compare/v0.43.0...v0.44.0) (2025-05-03)
+
+
+### Features
+
+* **apps:** Add more linear actions ([e659520](https://github.com/lecca-digital/lecca-io/commit/e65952078576e9be61a8c923198542a587809fe3))
+
 # [0.43.0](https://github.com/lecca-digital/lecca-io/compare/v0.42.0...v0.43.0) (2025-05-03)
 
 
