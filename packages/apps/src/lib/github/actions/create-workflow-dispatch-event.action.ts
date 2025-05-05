@@ -89,13 +89,25 @@ export const createWorkflowDispatchEvent = createAction({
     // Format the timestamp for GitHub API
     const startTimeFormatted = startTime.toISOString();
 
+    // Parse inputs with fallback to handle text with special characters
     const inputs = jsonParse(inputsRaw);
 
     const url = `https://api.github.com/repos/${owner}/${repo}/actions/workflows/${workflowId}/dispatches`;
 
     const body: any = { ref };
-    if (inputs && Object.keys(inputs).length > 0) {
-      body.inputs = inputs;
+    if (inputs) {
+      // If inputs is a string (parse failed but returned original), wrap it in an object
+      if (typeof inputs === 'string') {
+        body.inputs = { prompt: inputs };
+      }
+      // If inputs is an object (successful parse), use it directly
+      else if (
+        typeof inputs === 'object' &&
+        inputs !== null &&
+        Object.keys(inputs).length > 0
+      ) {
+        body.inputs = inputs;
+      }
     }
 
     const result = await http.request({
@@ -211,17 +223,18 @@ export const createWorkflowDispatchEvent = createAction({
               artifactsResult.status === 200 &&
               artifactsResult.data.artifacts &&
               artifactsResult.data.artifacts.length > 0;
-              
+
             // Get artifact information if available
-            const artifacts = hasArtifacts ? 
-              artifactsResult.data.artifacts.map(artifact => ({
-                id: artifact.id,
-                name: artifact.name,
-                size: artifact.size_in_bytes,
-                created_at: artifact.created_at,
-                expires_at: artifact.expires_at,
-                download_url: artifact.archive_download_url
-              })) : [];
+            const artifacts = hasArtifacts
+              ? artifactsResult.data.artifacts.map((artifact) => ({
+                  id: artifact.id,
+                  name: artifact.name,
+                  size: artifact.size_in_bytes,
+                  created_at: artifact.created_at,
+                  expires_at: artifact.expires_at,
+                  download_url: artifact.archive_download_url,
+                }))
+              : [];
 
             return {
               dispatched: true,
@@ -266,10 +279,13 @@ export const createWorkflowDispatchEvent = createAction({
               name: 'pr-data',
               size: 1024,
               created_at: new Date().toISOString(),
-              expires_at: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(),
-              download_url: 'https://api.github.com/repos/owner/repo/actions/artifacts/987654321/zip'
-            }
-          ]
+              expires_at: new Date(
+                Date.now() + 24 * 60 * 60 * 1000,
+              ).toISOString(),
+              download_url:
+                'https://api.github.com/repos/owner/repo/actions/artifacts/987654321/zip',
+            },
+          ],
         },
       };
     }
