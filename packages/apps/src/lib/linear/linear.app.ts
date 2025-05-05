@@ -3,6 +3,7 @@ import crypto from 'crypto';
 
 import { addLabelToIssue } from './actions/add-label-to-issue.action';
 import { createComment } from './actions/create-comment.action';
+import { getIssue } from './actions/get-issue.action';
 import { getLabel } from './actions/get-label.action';
 import { listLabelGroups } from './actions/list-label-groups.action';
 import { listLabels } from './actions/list-labels.action';
@@ -19,7 +20,7 @@ export const linear = createApp({
   description:
     'Linear is an issue tracking tool built for high-performance teams.',
   logoUrl: 'https://lecca-io.s3.us-east-2.amazonaws.com/assets/apps/linear.svg',
-  actions: [createComment, getLabel, addLabelToIssue, listLabelGroups, listLabels, listTeams],
+  actions: [createComment, getIssue, getLabel, addLabelToIssue, listLabelGroups, listLabels, listTeams],
   triggers: [newIssue, updatedIssue, removedIssue, labeledIssue],
   connections: [linearOAuth2],
   verifyWebhookRequest: ({ webhookBody, webhookHeaders }) => {
