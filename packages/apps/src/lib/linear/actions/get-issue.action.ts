@@ -20,7 +20,7 @@ export const getIssue = createAction({
 
     const url = 'https://api.linear.app/graphql';
     const query = `
-      query($issueId: ID!) {
+      query($issueId: String!) {
         issue(id: $issueId) {
           id
           identifier
@@ -28,7 +28,7 @@ export const getIssue = createAction({
           description
           priority
           estimate
-          status {
+          state {
             id
             name
             color
@@ -97,8 +97,8 @@ export const getIssue = createAction({
         description: 'This is a description of the issue',
         priority: 2,
         estimate: 3,
-        status: {
-          id: 'status-123',
+        state: {
+          id: 'state-123',
           name: 'In Progress',
           color: '#FFA500',
           type: 'started'
