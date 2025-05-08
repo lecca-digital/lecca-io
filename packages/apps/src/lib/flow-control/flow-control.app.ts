@@ -1,5 +1,6 @@
 import { createApp } from '@lecca-io/toolkit';
 
+import { abTest } from './actions/ab-test.action';
 import { conditionalPaths } from './actions/conditional-paths.action';
 import { getCustomInput } from './actions/get-custom-input.action';
 import { manuallyDecidePaths } from './actions/manually-decide-path.action';
@@ -22,6 +23,7 @@ export const flowControl = createApp({
     getCustomInput,
     manuallyDecidePaths,
     conditionalPaths,
+    abTest,
     runWorkflow,
     outputWorkflowData,
     schedule,

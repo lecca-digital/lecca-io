@@ -27,6 +27,7 @@ import { FieldConfig } from '../../../../../../../models/workflow/input-config-m
 import { cn } from '../../../../../../../utils/cn';
 import { CustomInputConfigFormFields } from '../manually-start-trigger-node';
 
+import { AbTestPathsFormFields } from './ab-test-paths-form-fields';
 import { ConditionalPathsFormFields } from './conditional-paths-form-fields';
 import { ConfigBuilderFormField } from './config-builder-form-field';
 import { DecidePathsFormFields } from './decide-paths-form-fields';
@@ -1415,6 +1416,18 @@ function DynamicFormItem({
         case 'conditional-paths': {
           return (
             <ConditionalPathsFormFields
+              node={node}
+              form={form}
+              fieldConfig={fieldConfig}
+              readonly={readOnly}
+              projectId={projectId}
+              agentId={agentId}
+            />
+          );
+        }
+        case 'ab-test-paths': {
+          return (
+            <AbTestPathsFormFields
               node={node}
               form={form}
               fieldConfig={fieldConfig}
