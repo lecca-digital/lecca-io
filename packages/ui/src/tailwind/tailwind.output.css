@@ -1835,14 +1835,6 @@ body {
   max-width: 100%;
 }
 
-.max-w-\[1000px\] {
-  max-width: 1000px;
-}
-
-.max-w-\[1050px\] {
-  max-width: 1050px;
-}
-
 .max-w-\[1200px\] {
   max-width: 1200px;
 }
@@ -1879,6 +1871,10 @@ body {
   max-width: 600px;
 }
 
+.max-w-\[800px\] {
+  max-width: 800px;
+}
+
 .max-w-\[90dvw\] {
   max-width: 90dvw;
 }
@@ -1907,14 +1903,6 @@ body {
 .max-w-min {
   max-width: -moz-min-content;
   max-width: min-content;
-}
-
-.max-w-\[8000px\] {
-  max-width: 8000px;
-}
-
-.max-w-\[800px\] {
-  max-width: 800px;
 }
 
 .flex-1 {
@@ -2426,14 +2414,6 @@ body {
 
 .rounded-sm {
   border-radius: calc(var(--radius) - 4px);
-}
-
-.rounded-xl {
-  border-radius: 0.75rem;
-}
-
-.rounded-2xl {
-  border-radius: 1rem;
 }
 
 .rounded-r-md {
@@ -2973,11 +2953,6 @@ body {
 .py-\[7px\] {
   padding-top: 7px;
   padding-bottom: 7px;
-}
-
-.px-0\.5 {
-  padding-left: 0.125rem;
-  padding-right: 0.125rem;
 }
 
 .pb-1 {
@@ -4238,10 +4213,6 @@ body {
 
 .focus-visible\:ring-offset-2:focus-visible {
   --tw-ring-offset-width: 2px;
-}
-
-.focus-visible\:ring-offset-0:focus-visible {
-  --tw-ring-offset-width: 0px;
 }
 
 .focus-visible\:ring-offset-background:focus-visible {
