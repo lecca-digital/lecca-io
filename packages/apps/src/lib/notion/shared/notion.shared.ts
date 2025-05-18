@@ -75,6 +75,7 @@ export const shared = {
           try {
             // Look for the property with type "title" - this is the most reliable approach
             const titlePropertyEntry = Object.entries(properties).find(
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               ([_, prop]: [string, any]) => prop.type === 'title',
             ) as any;
 
@@ -191,6 +192,7 @@ export const shared = {
           try {
             // Look for the property with type "title" - this is the most reliable approach
             const titlePropertyEntry = Object.entries(properties).find(
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               ([_, prop]: [string, any]) => prop.type === 'title',
             ) as any;
 

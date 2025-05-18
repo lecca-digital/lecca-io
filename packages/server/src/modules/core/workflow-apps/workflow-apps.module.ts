@@ -5,6 +5,8 @@ import { ServerConfig } from '../../../config/server.config';
 import { ConnectionsService } from '../connections/connections.service';
 import { ExecutionsService } from '../executions/executions.service';
 import { KnowledgeService } from '../knowledge/knowledge.service';
+import { SubTasksService } from '../tasks/subtasks.service';
+import { TasksGateway } from '../tasks/tasks.gateway';
 import { TasksService } from '../tasks/tasks.service';
 
 import { WorkflowAppsController } from './workflow-apps.controller';
@@ -28,6 +30,8 @@ import { WorkflowAppsService } from './workflow-apps.service';
     WorkflowAppsService,
     ConnectionsService,
     TasksService,
+    TasksGateway,
+    SubTasksService,
     ExecutionsService,
     TasksService,
     KnowledgeService, //Because TaskService uses it

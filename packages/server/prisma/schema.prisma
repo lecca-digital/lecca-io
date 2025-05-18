@@ -710,8 +710,33 @@ model Task {
   FK_agentId String
   agent      Agent  @relation(fields: [FK_agentId], references: [id], onDelete: Cascade)
 
+  //SubTask Relation
+  subTasks SubTask[]
+
   //CREDITS
   credits Credit[]
+}
+
+//SubTask
+
+enum SubTaskStatus {
+  pending
+  complete
+  blocked
+}
+
+model SubTask {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String @db.VarChar(100)
+  description String?       @db.VarChar(255)
+  status SubTaskStatus @default(pending)
+
+  //TASK RELATION
+  FK_taskId String
+  task      Task   @relation(fields: [FK_taskId], references: [id], onDelete: Cascade)
 }
 
 enum TaskMessageRole {

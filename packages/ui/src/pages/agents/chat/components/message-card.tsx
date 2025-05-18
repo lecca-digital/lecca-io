@@ -244,7 +244,6 @@ function getToolInvocationContent({
       )}
       <div className="inline-block mb-5">
         {toolInvocations!.map((tool) => {
-          console.log('toolinvocations', tool);
           return (
             <MessageToolCard
               key={tool.toolCallId}

@@ -62,12 +62,15 @@ export class AgentTasksController {
     @Body() data: MessageTaskDto,
     @Res() response: Response,
   ) {
-    const lastMessage = data.messages[data.messages.length - 1];
+    // Handle the case where messages array is empty (for subtask continuation)
+    const messages = data.messages?.length > 0 
+      ? [data.messages[data.messages.length - 1]] 
+      : [];
 
     const result = await this.tasksService.messageTaskOrCreateTaskIfNotFound({
       agentId,
       taskId,
-      messages: [lastMessage],
+      messages,
       requestingWorkspaceUserId: user.workspaceUserId,
       workspaceId: user.workspaceId,
       customIdentifier: undefined,
@@ -96,14 +99,18 @@ export class AgentTasksController {
     @Res() response: Response,
   ) {
     try {
-      const lastMessage = data.messages[data.messages.length - 1];
+      // Handle the case where messages array is empty (for subtask continuation)
+      const messages = data.messages?.length > 0 
+        ? [data.messages[data.messages.length - 1]] 
+        : [];
 
       const result = await this.tasksService.messageTaskOrCreateTaskIfNotFound({
         agentId,
         taskId,
-        messages: [lastMessage],
+        messages,
         requestingWorkspaceUserId: user.workspaceUserId,
         workspaceId: user.workspaceId,
+        shouldStream: true,
         customIdentifier: undefined,
       });
 

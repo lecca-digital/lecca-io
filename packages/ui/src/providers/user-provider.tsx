@@ -194,7 +194,7 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
 
   React.useEffect(() => {
     //Apply dark theme to body
-    if (import.meta.env.VITE_MOCK_API_CALLS === 'false') {
+    if (import.meta.env.VITE_MOCK_API_CALLS !== 'true') {
       if (!workspaceUserPreferencesContext) {
         /**
          * If the user preferences haven't been loaded yet, we'll check local storage.
@@ -202,11 +202,13 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
          * Doing this to prevent flickering when the user preferences are loaded.
          */
         if (window.localStorage.getItem('userPreferences')) {
-          window.localStorage.getItem('userPreferences') === 'DARK'
+          const theme = window.localStorage.getItem('userPreferences');
+          theme === 'DARK'
             ? document.body.classList.add('dark')
             : document.body.classList.remove('dark');
         } else {
-          window.matchMedia('(prefers-color-scheme: dark)').matches
+          const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          prefersDarkMode
             ? document.body.classList.add('dark')
             : document.body.classList.remove('dark');
         }
@@ -215,13 +217,15 @@ export const UserProvider = ({ children }: { children: React.ReactNode }) => {
       } else if (workspaceUserPreferencesContext.theme === 'LIGHT') {
         document.body.classList.remove('dark');
       } else {
-        window.matchMedia('(prefers-color-scheme: dark)').matches
+        const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        prefersDarkMode
           ? document.body.classList.add('dark')
           : document.body.classList.remove('dark');
       }
     } else {
       //If we're using mock data, we'll just check the user's system preferences.
-      window.matchMedia('(prefers-color-scheme: dark)').matches
+      const prefersDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      prefersDarkMode
         ? document.body.classList.add('dark')
         : document.body.classList.remove('dark');
     }

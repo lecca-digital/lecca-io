@@ -407,7 +407,7 @@ export function AgentBuilderAdvancedSettingsContent({ agent }: PropType) {
                     <Slider
                       className="pt-1"
                       min={0}
-                      max={10}
+                      max={50}
                       step={1}
                       onValueChange={(values) => field.onChange(values[0])}
                       value={

@@ -8,6 +8,7 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { appQueryClient } from './api/api-library';
 import { Toaster } from './components/ui/toaster';
+import { WebSocketProvider } from './contexts/websocket-context';
 import { ApplicationSideNavProvider } from './providers/application-side-nav-provider';
 import { UserProvider } from './providers/user-provider';
 import { AppRoutes } from './router/routes';
@@ -19,9 +20,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <QueryClientProvider client={appQueryClient}>
       <BrowserRouter>
         <UserProvider>
-          <ApplicationSideNavProvider>
-            <AppRoutes />
-          </ApplicationSideNavProvider>
+          <WebSocketProvider>
+            <ApplicationSideNavProvider>
+              <AppRoutes />
+            </ApplicationSideNavProvider>
+          </WebSocketProvider>
         </UserProvider>
       </BrowserRouter>
       <Toaster />

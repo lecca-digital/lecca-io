@@ -36,7 +36,7 @@ export const getPageText = createAction({
       .replace(/[•*>-]/g, '') // Remove bullets and other markdown chars
       .replace(/\n{3,}/g, '\n\n') // Replace multiple newlines with double newlines
       .trim();
-    
+
     // Fetch the page to get its title
     const pageDetails = await notionLib.pages.retrieve({
       page_id: page,
@@ -57,26 +57,29 @@ export const getPageText = createAction({
       }
 
       const properties = (pageDetails as any).properties || {};
-      
+
       // First try to find a property of type 'title'
       const titleProp = Object.entries(properties).find(
-        ([_, value]) => (value as NotionProperty).type === 'title'
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        ([_, value]) => (value as NotionProperty).type === 'title',
       );
-      
+
       // If no title property found, look for properties named 'Name' or 'Title'
-      const propertyEntry = titleProp || 
+      const propertyEntry =
+        titleProp ||
         Object.entries(properties).find(
-          ([key]) => key === 'Name' || key === 'Title'
+          ([key]) => key === 'Name' || key === 'Title',
         );
 
       if (propertyEntry) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_, property] = propertyEntry;
-        
+
         // Now we can safely access the title array with proper typing
         const titleArray = (property as NotionProperty).title;
         if (titleArray && titleArray.length > 0) {
-          pageTitle = titleArray[0]?.plain_text || 
-                     titleArray[0]?.text?.content || '';
+          pageTitle =
+            titleArray[0]?.plain_text || titleArray[0]?.text?.content || '';
         }
       }
     } catch (error) {

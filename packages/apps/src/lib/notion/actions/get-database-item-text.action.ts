@@ -65,6 +65,7 @@ export const getDatabaseItemText = createAction({
 
       // First try to find a property of type 'title'
       const titleProp = Object.entries(properties).find(
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         ([_, value]) => (value as NotionProperty).type === 'title',
       );
 
@@ -76,6 +77,7 @@ export const getDatabaseItemText = createAction({
         );
 
       if (propertyEntry) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const [_, property] = propertyEntry;
 
         // Now we can safely access the title array with proper typing
