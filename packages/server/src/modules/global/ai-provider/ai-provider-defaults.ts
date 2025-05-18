@@ -250,6 +250,26 @@ export const DEFAULT_PROVIDERS: AiProviders = {
   gemini: {
     appConnectionId: 'gemini_connection_api-key',
     languageModels: {
+      'gemini-2.5-flash': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 6667, // $0.15 per million tokens = 6,666,667 tokens per credit
+          output: 1667, // $0.60 per million tokens = 1,666,667 tokens per credit
+        },
+      },
+      'gemini-2.5-pro': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 800, // $1.25 per million tokens = 800,000 tokens per credit
+          output: 100, // $10.00 per million tokens = 100,000 tokens per credit
+        },
+      },
       'gemini-2.0-flash-exp': {
         vision: true,
         tools: true,
