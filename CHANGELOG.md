@@ -1,3 +1,15 @@
+# [0.46.0](https://github.com/lecca-digital/lecca-io/compare/v0.45.0...v0.46.0) (2025-05-18)
+
+
+### Bug Fixes
+
+* Resolve pnpm lock merge conflict ([8c6abb2](https://github.com/lecca-digital/lecca-io/commit/8c6abb2fc094c9fad37412a94ade2df54aa2da51))
+
+
+### Features
+
+* Qdrant app ([f589f6b](https://github.com/lecca-digital/lecca-io/commit/f589f6b0f94c00e7bbb9674256006344470aae1c))
+
 # [0.45.0](https://github.com/lecca-digital/lecca-io/compare/v0.44.0...v0.45.0) (2025-05-05)
 
 
