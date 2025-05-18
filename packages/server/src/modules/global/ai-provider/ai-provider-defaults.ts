@@ -6,6 +6,36 @@ export const DEFAULT_PROVIDERS: AiProviders = {
   openai: {
     appConnectionId: 'openai_connection_api-key',
     languageModels: {
+      'gpt-4.1': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 500, // $2 per million tokens = 500,000 tokens per credit
+          output: 125, // $8 per million tokens = 125,000 tokens per credit
+        },
+      },
+      'gpt-4.1-mini': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 2500, // $0.40 per million tokens = 2,500,000 tokens per credit
+          output: 625, // $1.60 per million tokens = 625,000 tokens per credit
+        },
+      },
+      'gpt-4.1-nano': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 10000, // $0.10 per million tokens = 10,000,000 tokens per credit
+          output: 2500, // $0.40 per million tokens = 2,500,000 tokens per credit
+        },
+      },
       'gpt-4o': {
         vision: true,
         tools: true,

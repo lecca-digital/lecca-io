@@ -793,11 +793,17 @@ export class TasksService {
         maxTokens: 25,
       });
 
+      // Process the result to remove any thinking content
+      const processedText = result.text.replace(
+        /<think>[\s\S]*?<\/think>/g,
+        '',
+      );
+
       //name can be a maximum of 100 characters
       const newName =
-        result.text.length > 100
-          ? result.text.slice(0, 97) + '...'
-          : result.text;
+        processedText.length > 100
+          ? processedText.slice(0, 97) + '...'
+          : processedText;
 
       //If the generateText fails, it could return an empty string, so we check if the newName is not empty.
       if (newName?.trim()) {
