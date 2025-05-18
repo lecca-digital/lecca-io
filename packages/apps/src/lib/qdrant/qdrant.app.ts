@@ -10,8 +10,7 @@ export const qdrant = createApp({
   name: 'Qdrant',
   description:
     'High-performance, massive-scale vector search engine for the next generation of AI.',
-  logoUrl:
-    'https://qdrant.tech/img/brand-resources-logos/logomark.svg',
+  logoUrl: 'https://lecca-io.s3.us-east-2.amazonaws.com/assets/apps/qdrant.svg',
   actions: [queryVectors, upsertPoint, listIndexes],
   triggers: [],
   connections: [qdrantApiKey],

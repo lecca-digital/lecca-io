@@ -11,9 +11,9 @@ export const listIndexes = createAction({
       label: 'URL',
       description: 'URL of the Qdrant instance. Eg: http://localhost:6333/',
       required: {
-        "missingMessage": "The Qdrant URL is required",
-        "missingStatus": "error"
-      }
+        missingMessage: 'The Qdrant URL is required',
+        missingStatus: 'error',
+      },
     }),
   ],
   aiSchema: z.object({
@@ -22,8 +22,6 @@ export const listIndexes = createAction({
   run: async ({ connection, configValue, workspaceId, http }) => {
     const url = new URL(configValue.url);
     url.pathname += `collections`;
-
-    console.log("URL IS", url.toString())
 
     const response = await http.request({
       method: 'GET',
@@ -38,33 +36,33 @@ export const listIndexes = createAction({
   },
   mockRun: async () => {
     return {
-      "usage": {
-        "cpu": 1,
-        "payload_io_read": 1,
-        "payload_io_write": 1,
-        "payload_index_io_read": 1,
-        "payload_index_io_write": 1,
-        "vector_io_read": 1,
-        "vector_io_write": 1
+      usage: {
+        cpu: 1,
+        payload_io_read: 1,
+        payload_io_write: 1,
+        payload_index_io_read: 1,
+        payload_index_io_write: 1,
+        vector_io_read: 1,
+        vector_io_write: 1,
       },
-      "time": 0.002,
-      "status": "ok",
-      "result": {
-        "collections": [
+      time: 0.002,
+      status: 'ok',
+      result: {
+        collections: [
           {
-            "name": "arivx-title"
+            name: 'arivx-title',
           },
           {
-            "name": "arivx-abstract"
+            name: 'arivx-abstract',
           },
           {
-            "name": "medium-title"
+            name: 'medium-title',
           },
           {
-            "name": "medium-text"
-          }
-        ]
-      }
+            name: 'medium-text',
+          },
+        ],
+      },
     };
   },
 });
