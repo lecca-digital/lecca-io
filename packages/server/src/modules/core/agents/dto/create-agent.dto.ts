@@ -142,6 +142,18 @@ export class CreateAgentDto {
 
   @IsOptional()
   @IsString()
+  taskNamingLlmConnectionId?: string;
+
+  @IsOptional()
+  @IsString()
+  taskNamingLlmModel?: string;
+
+  @IsOptional()
+  @IsString()
+  taskNamingLlmProvider?: string;
+
+  @IsOptional()
+  @IsString()
   @MaxLength(1000)
   taskNamingInstructions: string;
 }

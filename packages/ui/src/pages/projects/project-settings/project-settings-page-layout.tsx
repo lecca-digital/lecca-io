@@ -29,6 +29,9 @@ export function ProjectSettingsLayout() {
         }}
       />,
       <PageSideNavLink
+        item={{ title: 'Agents', to: `/projects/${projectId}/agent-settings` }}
+      />,
+      <PageSideNavLink
         item={{
           title: 'Invitations',
           to: `/projects/${projectId}/invitations`,

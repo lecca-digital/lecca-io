@@ -32,6 +32,7 @@ import { ExecutionProvider } from '../pages/projects/execution-provider';
 import { ProjectAgentsPage } from '../pages/projects/project-agents-page';
 import { ProjectDetailsPage } from '../pages/projects/project-details-page';
 import { ProjectExecutionsPage } from '../pages/projects/project-executions-page';
+import ProjectAgentSettingsPage from '../pages/projects/project-settings/project-agent-settings-page';
 import ProjectGeneralSettingsPage from '../pages/projects/project-settings/project-general-settings-page';
 import { ProjectInvitationsPage } from '../pages/projects/project-settings/project-invitations-page';
 import { ProjectSettingsLayout } from '../pages/projects/project-settings/project-settings-page-layout';
@@ -60,6 +61,7 @@ import { WorkflowDetailsPage } from '../pages/workflows/workflow-details-page';
 import WorkflowGeneralSettingsPage from '../pages/workflows/workflow-settings/workflow-general-settings-page';
 import { WorkflowSettingsLayout } from '../pages/workflows/workflow-settings/workflow-settings-page-layout';
 import WorkflowsPage from '../pages/workflows/workflows-page';
+import { WorkspaceAgentsPage } from '../pages/workspace-settings/workspace-agents-page';
 import { WorkspaceBillingPage } from '../pages/workspace-settings/workspace-billing-page';
 import { WorkspaceInvitationsPage } from '../pages/workspace-settings/workspace-invitations-page';
 import WorkspaceNotificationPreferencesPage from '../pages/workspace-settings/workspace-notification-preferences';
@@ -111,6 +113,10 @@ export const AppRoutes = () => {
                   element={<ProjectGeneralSettingsPage />}
                 />
                 <Route path="users" element={<ProjectWorkspaceUsersPage />} />
+                <Route
+                  path="agent-settings"
+                  element={<ProjectAgentSettingsPage />}
+                />
                 <Route
                   path="invitations"
                   element={<ProjectInvitationsPage />}
@@ -374,6 +380,7 @@ export const AppRoutes = () => {
               path="/workspace-preferences"
               element={<WorkspacePreferencesPage />}
             />
+            <Route path="/workspace-agents" element={<WorkspaceAgentsPage />} />
             <Route path="/workspace-billing">
               <Route index element={<WorkspaceBillingPage />} />
             </Route>

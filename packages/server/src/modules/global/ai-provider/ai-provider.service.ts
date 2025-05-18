@@ -98,7 +98,7 @@ export class AiProviderService {
     workspaceId: string;
   }): LanguageModelV1 => {
     if (!llmModel) {
-      throw new BadRequestException('LLM Model is required');
+      throw new BadRequestException('Language Model is required');
     }
 
     if (!aiProvider) {

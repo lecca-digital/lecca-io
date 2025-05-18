@@ -1835,14 +1835,6 @@ body {
   max-width: 100%;
 }
 
-.max-w-\[1000px\] {
-  max-width: 1000px;
-}
-
-.max-w-\[1050px\] {
-  max-width: 1050px;
-}
-
 .max-w-\[1200px\] {
   max-width: 1200px;
 }
@@ -1877,6 +1869,10 @@ body {
 
 .max-w-\[600px\] {
   max-width: 600px;
+}
+
+.max-w-\[800px\] {
+  max-width: 800px;
 }
 
 .max-w-\[90dvw\] {
@@ -2418,6 +2414,10 @@ body {
 
 .rounded-sm {
   border-radius: calc(var(--radius) - 4px);
+}
+
+.rounded-2xl {
+  border-radius: 1rem;
 }
 
 .rounded-r-md {
@@ -5064,6 +5064,14 @@ body {
 
   .lg\:max-w-\[900px\] {
     max-width: 900px;
+  }
+
+  .lg\:max-w-3xl {
+    max-width: 48rem;
+  }
+
+  .lg\:max-w-4xl {
+    max-width: 56rem;
   }
 
   .lg\:grid-cols-2 {

@@ -356,7 +356,7 @@ export const tours: Tour[] = [
       },
       {
         icon: <Icons.settings2 className="inline mb-0.5 mr-1" />,
-        title: 'Advanced Settings',
+        title: 'Agent Configuration',
         content: (
           <div className="flex flex-col">
             <Card.Description className="text-primary">
@@ -380,8 +380,8 @@ export const tours: Tour[] = [
               your clipboard to the chat.
               <br />
               <br />
-              The LLM model you're using must support images for this content
-              feature to work.
+              The language model you're using must support images for this
+              content feature to work.
             </Card.Description>
           </div>
         ),

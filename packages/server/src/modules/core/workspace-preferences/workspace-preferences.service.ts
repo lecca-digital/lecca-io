@@ -33,6 +33,25 @@ export class WorkspacePreferencesService {
         select: {
           id: true,
           disabledFeatures: true,
+          defaultAgentLlmProvider: true,
+          defaultAgentLlmModel: true,
+          defaultAgentLlmConnection: {
+            select: {
+              id: true,
+              connectionId: true,
+              name: true,
+            },
+          },
+          defaultTaskNamingInstructions: true,
+          defaultTaskNamingLlmProvider: true,
+          defaultTaskNamingLlmModel: true,
+          defaultTaskNamingLlmConnection: {
+            select: {
+              id: true,
+              connectionId: true,
+              name: true,
+            },
+          },
         },
       });
 
@@ -50,12 +69,51 @@ export class WorkspacePreferencesService {
     workspaceId: string;
     data: UpdateWorkspacePreferencesDto | T;
   }) {
+    const defaultAgentLlmConnectionId = (data as UpdateWorkspacePreferencesDto)
+      .defaultAgentLlmConnectionId;
+    if (defaultAgentLlmConnectionId !== undefined) {
+      delete (data as UpdateWorkspacePreferencesDto)
+        .defaultAgentLlmConnectionId;
+    }
+
+    const defaultTaskNamingLlmConnectionId = (
+      data as UpdateWorkspacePreferencesDto
+    ).defaultTaskNamingLlmConnectionId;
+    if (defaultTaskNamingLlmConnectionId !== undefined) {
+      delete (data as UpdateWorkspacePreferencesDto)
+        .defaultTaskNamingLlmConnectionId;
+    }
+
     await this.prisma.workspacePreferences.update({
       where: {
         FK_workspaceId: workspaceId,
       },
       data: {
         ...data,
+        defaultAgentLlmConnection:
+          defaultAgentLlmConnectionId === null
+            ? {
+                disconnect: true,
+              }
+            : defaultAgentLlmConnectionId === undefined
+              ? undefined
+              : {
+                  connect: {
+                    id: defaultAgentLlmConnectionId,
+                  },
+                },
+        defaultTaskNamingLlmConnection:
+          defaultTaskNamingLlmConnectionId === null
+            ? {
+                disconnect: true,
+              }
+            : defaultTaskNamingLlmConnectionId === undefined
+              ? undefined
+              : {
+                  connect: {
+                    id: defaultTaskNamingLlmConnectionId,
+                  },
+                },
       },
       select: {
         id: true,

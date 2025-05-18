@@ -22,7 +22,7 @@ export const extract = createAction({
       id: 'prompt',
       label: 'Prompt',
       description:
-        'Prompt for the LLM model. e.g. "Extract pricing information from the page"',
+        'Prompt for the language model. e.g. "Extract pricing information from the page"',
       placeholder: 'Add instructions',
     }),
   ],
@@ -30,7 +30,7 @@ export const extract = createAction({
     urls: z.array(z.string()).describe('Urls to extract data from'),
     prompt: z
       .string()
-      .describe('Prompt for the LLM model on what to extract data'),
+      .describe('Prompt for the language model on what to extract data'),
   }),
   run: async ({ connection, http, workspaceId, configValue, testing }) => {
     const { urls, prompt } = configValue;

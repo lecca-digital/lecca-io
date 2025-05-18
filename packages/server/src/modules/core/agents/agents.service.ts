@@ -107,6 +107,16 @@ export class AgentsService {
       delete (data as UpdateAgentDto).llmConnectionId;
     }
 
+    const taskNamingLlmConnectionId = (data as UpdateAgentDto)
+      .taskNamingLlmConnectionId;
+    if (taskNamingLlmConnectionId) {
+      await this.#validateConnectionsBelongToProject({
+        connectionIds: [taskNamingLlmConnectionId],
+        projectId: projectId,
+      });
+      delete (data as UpdateAgentDto).taskNamingLlmConnectionId;
+    }
+
     const webAccess = (data as UpdateAgentDto).webAccess;
     if (webAccess != null) {
       delete (data as UpdateAgentDto).webAccess;
@@ -117,13 +127,37 @@ export class AgentsService {
       delete (data as UpdateAgentDto).phoneAccess;
     }
 
+    const project = await this.#getProjectSettingsByProjectId({
+      projectId,
+    });
+
     const newAgent = await this.prisma.agent.create({
       data: {
         ...data,
         triggers: undefined, //We'll set this in the update along with the other properties. Just adding this here to remove type warning
-        llmProvider: data.llmProvider ?? ServerConfig.DEFAULT_LLM_PROVIDER,
-        llmModel: data.llmModel ?? ServerConfig.DEFAULT_LLM_MODEL,
+        llmProvider:
+          data.llmProvider ??
+          project.defaultAgentLlmProvider ??
+          ServerConfig.DEFAULT_LLM_PROVIDER,
+        llmModel:
+          data.llmModel ??
+          project.defaultAgentLlmModel ??
+          ServerConfig.DEFAULT_LLM_MODEL,
         FK_llmConnectionId: llmConnectionId,
+        taskNamingLlmProvider:
+          data.taskNamingLlmProvider ??
+          project.defaultTaskNamingLlmProvider ??
+          ServerConfig.DEFAULT_LLM_PROVIDER,
+        taskNamingLlmModel:
+          data.taskNamingLlmModel ??
+          project.defaultTaskNamingLlmModel ??
+          ServerConfig.DEFAULT_LLM_MODEL,
+        // taskNamingInstructions ?? project.taskNa
+        taskNamingInstructions:
+          project.defaultTaskNamingInstructions ?? data.taskNamingInstructions,
+        FK_taskNamingLlmConnectionId:
+          project.defaultTaskNamingLlmConnection?.id ??
+          taskNamingLlmConnectionId,
         FK_projectId: projectId,
       },
       select: {
@@ -205,10 +239,21 @@ export class AgentsService {
         tools: expansion?.tools ?? false,
         toolIds: expansion?.toolIds ?? false,
         triggerIds: expansion?.triggerIds ?? false,
-        taskNamingInstructions: expansion?.taskNamingInstructions ?? false,
         llmModel: expansion?.llmModel ?? false,
         llmProvider: expansion?.llmProvider ?? false,
         llmConnection: expansion?.llmConnection
+          ? {
+              select: {
+                id: true,
+                connectionId: true,
+                name: true,
+              },
+            }
+          : false,
+        taskNamingInstructions: expansion?.taskNamingInstructions ?? false,
+        taskNamingLlmModel: expansion?.taskNamingLlmModel ?? false,
+        taskNamingLlmProvider: expansion?.taskNamingLlmProvider ?? false,
+        taskNamingLlmConnection: expansion?.taskNamingLlmConnection
           ? {
               select: {
                 id: true,
@@ -397,6 +442,22 @@ export class AgentsService {
       delete (data as UpdateAgentDto).llmConnectionId;
     }
 
+    const taskNamingLlmConnectionId = (data as UpdateAgentDto)
+      .taskNamingLlmConnectionId;
+    if (taskNamingLlmConnectionId) {
+      await this.#validateConnectionsBelongToProject({
+        connectionIds: [taskNamingLlmConnectionId],
+        projectId: agentProject.project.id,
+      });
+
+      delete (data as UpdateAgentDto).taskNamingLlmConnectionId;
+    } else {
+      delete (data as UpdateAgentDto).taskNamingLlmConnectionId;
+    }
+
+    /**
+     * Legacy code. We need to remove this in the future.
+     */
     const connectionIds = (data as UpdateAgentDto).connectionIds;
     const actionIds = (data as UpdateAgentDto).actionIds;
     if (connectionIds || actionIds) {
@@ -429,6 +490,9 @@ export class AgentsService {
       }
     }
 
+    /**
+     * Legacy code. We need to remove this in the future.
+     */
     const knowledgeIds = (data as UpdateAgentDto).knowledgeIds;
     if (knowledgeIds) {
       const agentProject = await this.prisma.agent.findFirst({
@@ -452,6 +516,9 @@ export class AgentsService {
       delete (data as UpdateAgentDto).knowledgeIds;
     }
 
+    /**
+     * Legacy code. We need to remove this in the future.
+     */
     const variableIds = (data as UpdateAgentDto).variableIds;
     if (variableIds) {
       const agentProject = await this.prisma.agent.findFirst({
@@ -475,6 +542,9 @@ export class AgentsService {
       delete (data as UpdateAgentDto).variableIds;
     }
 
+    /**
+     * Legacy code. We need to remove this in the future.
+     */
     const workflowIds = (data as UpdateAgentDto).workflowIds;
     if (workflowIds) {
       const agentProject = await this.prisma.agent.findFirst({
@@ -498,6 +568,9 @@ export class AgentsService {
       delete (data as UpdateAgentDto).workflowIds;
     }
 
+    /**
+     * Legacy code. We need to remove this in the future.
+     */
     const agentIds = (data as UpdateAgentDto).agentIds;
     if (agentIds) {
       const agentProject = await this.prisma.agent.findFirst({
@@ -521,11 +594,17 @@ export class AgentsService {
       delete (data as UpdateAgentDto).agentIds;
     }
 
+    /**
+     * Legacy code. We need to remove this in the future.
+     */
     const webAccess = (data as UpdateAgentDto).webAccess;
     if (webAccess != null) {
       delete (data as UpdateAgentDto).webAccess;
     }
 
+    /**
+     * Legacy code. We need to remove this in the future.
+     */
     const phoneAccess = (data as UpdateAgentDto).phoneAccess;
     if (phoneAccess != null) {
       delete (data as UpdateAgentDto).phoneAccess;
@@ -599,6 +678,18 @@ export class AgentsService {
               : {
                   connect: {
                     id: llmConnectionId,
+                  },
+                },
+        taskNamingLlmConnection:
+          taskNamingLlmConnectionId === null
+            ? {
+                disconnect: true,
+              }
+            : taskNamingLlmConnectionId === undefined
+              ? undefined
+              : {
+                  connect: {
+                    id: taskNamingLlmConnectionId,
                   },
                 },
         agentWebAccess:
@@ -731,10 +822,21 @@ export class AgentsService {
         triggers: expansion?.triggers ?? false,
         toolIds: expansion?.toolIds ?? false,
         triggerIds: expansion?.triggerIds ?? false,
-        taskNamingInstructions: expansion?.taskNamingInstructions ?? false,
         llmModel: expansion?.llmModel ?? false,
         llmProvider: expansion?.llmProvider ?? false,
         llmConnection: expansion?.llmConnection
+          ? {
+              select: {
+                id: true,
+                connectionId: true,
+                name: true,
+              },
+            }
+          : false,
+        taskNamingInstructions: expansion?.taskNamingInstructions ?? false,
+        taskNamingLlmModel: expansion?.taskNamingLlmModel ?? false,
+        taskNamingLlmProvider: expansion?.taskNamingLlmProvider ?? false,
+        taskNamingLlmConnection: expansion?.taskNamingLlmConnection
           ? {
               select: {
                 id: true,
@@ -1392,6 +1494,32 @@ export class AgentsService {
       type: 'workflow',
       animated: true,
     };
+  };
+
+  #getProjectSettingsByProjectId = async ({
+    projectId,
+  }: {
+    projectId: string;
+  }) => {
+    const project = await this.prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+      select: {
+        defaultAgentLlmModel: true,
+        defaultAgentLlmProvider: true,
+        defaultTaskNamingLlmConnection: {
+          select: {
+            id: true,
+          },
+        },
+        defaultTaskNamingLlmModel: true,
+        defaultTaskNamingLlmProvider: true,
+        defaultTaskNamingInstructions: true,
+      },
+    });
+
+    return project;
   };
 
   async #validateConnectionsBelongToProject({

@@ -38,11 +38,48 @@ export class ProjectsService {
     //Check project limit for workspace plan
     await this.#checkProjectLimitForWorkspacePlan({ workspaceId });
 
+    const workspacePreferences =
+      await this.#getWorkspacePreferencesByWorkspaceId({
+        workspaceId: workspaceId,
+      });
+
     const newProject = await this.prisma.project.create({
       data: {
         ...data,
-        FK_createdByWorkspaceUserId: createdByWorkspaceUserId,
-        FK_workspaceId: workspaceId,
+        defaultAgentLlmConnection: !workspacePreferences
+          ?.defaultAgentLlmConnection?.id
+          ? undefined
+          : {
+              connect: {
+                id: workspacePreferences.defaultAgentLlmConnection.id!,
+              },
+            },
+        defaultAgentLlmProvider: workspacePreferences?.defaultAgentLlmProvider,
+        defaultAgentLlmModel: workspacePreferences?.defaultAgentLlmModel,
+        defaultTaskNamingLlmConnection: !workspacePreferences
+          ?.defaultTaskNamingLlmConnection?.id
+          ? undefined
+          : {
+              connect: {
+                id: workspacePreferences.defaultTaskNamingLlmConnection?.id,
+              },
+            },
+        defaultTaskNamingLlmProvider:
+          workspacePreferences?.defaultTaskNamingLlmProvider,
+        defaultTaskNamingLlmModel:
+          workspacePreferences?.defaultTaskNamingLlmModel,
+        defaultTaskNamingInstructions:
+          workspacePreferences?.defaultTaskNamingInstructions,
+        createdByWorkspaceUser: {
+          connect: {
+            id: createdByWorkspaceUserId,
+          },
+        },
+        workspace: {
+          connect: {
+            id: workspaceId,
+          },
+        },
         workspaceUsers: {
           connect: {
             id: createdByWorkspaceUserId,
@@ -89,6 +126,33 @@ export class ProjectsService {
         description: expansion?.description ?? false,
         createdAt: expansion?.createdAt ?? false,
         updatedAt: expansion?.updatedAt ?? false,
+        defaultAgentLlmProvider: expansion?.defaultAgentLlmProvider ?? false,
+        defaultAgentLlmModel: expansion?.defaultAgentLlmModel ?? false,
+        defaultAgentLlmConnection: expansion?.defaultAgentLlmConnection
+          ? {
+              select: {
+                id: true,
+                connectionId: true,
+                name: true,
+              },
+            }
+          : false,
+        defaultTaskNamingInstructions:
+          expansion?.defaultTaskNamingInstructions ?? false,
+        defaultTaskNamingLlmProvider:
+          expansion?.defaultTaskNamingLlmProvider ?? false,
+        defaultTaskNamingLlmModel:
+          expansion?.defaultTaskNamingLlmModel ?? false,
+        defaultTaskNamingLlmConnection:
+          expansion?.defaultTaskNamingLlmConnection
+            ? {
+                select: {
+                  id: true,
+                  connectionId: true,
+                  name: true,
+                },
+              }
+            : false,
         _count: expansion?.countAgents
           ? {
               select: {
@@ -156,9 +220,67 @@ export class ProjectsService {
     includeType?: ProjectIncludeTypeDto;
     expansion?: ProjectExpansionDto;
   }) {
+    const defaultAgentLlmConnectionId = (data as UpdateProjectDto)
+      .defaultAgentLlmConnectionId;
+    delete (data as UpdateProjectDto).defaultAgentLlmConnectionId;
+    if (defaultAgentLlmConnectionId) {
+      const hasAccess = await this.checkProjectHasAccessToConnection({
+        connectionId: defaultAgentLlmConnectionId,
+        projectId: projectId,
+      });
+
+      if (!hasAccess) {
+        throw new ForbiddenException(
+          'You do not have access to this connection',
+        );
+      }
+    }
+
+    const defaultTaskNamingLlmConnectionId = (data as UpdateProjectDto)
+      .defaultTaskNamingLlmConnectionId;
+    delete (data as UpdateProjectDto).defaultTaskNamingLlmConnectionId;
+    if (defaultTaskNamingLlmConnectionId) {
+      const hasAccess = await this.checkProjectHasAccessToConnection({
+        connectionId: defaultTaskNamingLlmConnectionId,
+        projectId: projectId,
+      });
+
+      if (!hasAccess) {
+        throw new ForbiddenException(
+          'You do not have access to this connection',
+        );
+      }
+    }
+
     const project = await this.prisma.project.update({
       where: { id: projectId },
-      data,
+      data: {
+        ...data,
+        defaultAgentLlmConnection:
+          defaultAgentLlmConnectionId === null
+            ? {
+                disconnect: true,
+              }
+            : defaultAgentLlmConnectionId === undefined
+              ? undefined
+              : {
+                  connect: {
+                    id: defaultAgentLlmConnectionId,
+                  },
+                },
+        defaultTaskNamingLlmConnection:
+          defaultTaskNamingLlmConnectionId === null
+            ? {
+                disconnect: true,
+              }
+            : defaultTaskNamingLlmConnectionId === undefined
+              ? undefined
+              : {
+                  connect: {
+                    id: defaultTaskNamingLlmConnectionId,
+                  },
+                },
+      },
       select: {
         id: true,
       },
@@ -209,6 +331,33 @@ export class ProjectsService {
         createdAt: expansion?.createdAt ?? false,
         updatedAt: expansion?.updatedAt ?? false,
         description: expansion?.description ?? false,
+        defaultAgentLlmProvider: expansion?.defaultAgentLlmProvider ?? false,
+        defaultAgentLlmModel: expansion?.defaultAgentLlmModel ?? false,
+        defaultAgentLlmConnection: expansion?.defaultAgentLlmConnection
+          ? {
+              select: {
+                id: true,
+                connectionId: true,
+                name: true,
+              },
+            }
+          : false,
+        defaultTaskNamingInstructions:
+          expansion?.defaultTaskNamingInstructions ?? false,
+        defaultTaskNamingLlmProvider:
+          expansion?.defaultTaskNamingLlmProvider ?? false,
+        defaultTaskNamingLlmModel:
+          expansion?.defaultTaskNamingLlmModel ?? false,
+        defaultTaskNamingLlmConnection:
+          expansion?.defaultTaskNamingLlmConnection
+            ? {
+                select: {
+                  id: true,
+                  connectionId: true,
+                  name: true,
+                },
+              }
+            : false,
         _count: expansion?.countAgents
           ? {
               select: {
@@ -288,6 +437,41 @@ export class ProjectsService {
     return true;
   }
 
+  #getWorkspacePreferencesByWorkspaceId = async ({
+    workspaceId,
+  }: {
+    workspaceId: string;
+  }) => {
+    const workspacePreferences = await this.prisma.workspace.findUnique({
+      where: {
+        id: workspaceId,
+      },
+      select: {
+        preferences: {
+          select: {
+            defaultAgentLlmConnection: {
+              select: {
+                id: true,
+              },
+            },
+            defaultAgentLlmModel: true,
+            defaultAgentLlmProvider: true,
+            defaultTaskNamingLlmConnection: {
+              select: {
+                id: true,
+              },
+            },
+            defaultTaskNamingLlmModel: true,
+            defaultTaskNamingLlmProvider: true,
+            defaultTaskNamingInstructions: true,
+          },
+        },
+      },
+    });
+
+    return workspacePreferences?.preferences;
+  };
+
   #deleteKnowledgeFromProject = async ({
     projectId,
   }: {
@@ -356,6 +540,56 @@ export class ProjectsService {
       `workspaces/${workspaceId}/knowledge/${knowledgeId}`,
     );
   };
+
+  async checkProjectHasAccessToConnection({
+    projectId,
+    connectionId,
+  }: {
+    projectId: string;
+    connectionId: string;
+  }) {
+    const belongs = await this.prisma.project.findFirst({
+      where: {
+        AND: [
+          {
+            id: projectId,
+          },
+          {
+            OR: [
+              {
+                connections: {
+                  some: {
+                    id: connectionId,
+                  },
+                },
+              },
+              {
+                workspace: {
+                  connections: {
+                    some: {
+                      AND: [
+                        {
+                          id: connectionId,
+                        },
+                        {
+                          FK_projectId: null,
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    return !!belongs;
+  }
 
   async leaveProject({
     workspaceUserId,

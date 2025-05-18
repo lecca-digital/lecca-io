@@ -124,4 +124,16 @@ export class AgentExpansionDto {
   @IsOptional()
   @IsBoolean()
   taskNamingInstructions?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  taskNamingLlmConnection?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  taskNamingLlmProvider?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  taskNamingLlmModel?: boolean;
 }

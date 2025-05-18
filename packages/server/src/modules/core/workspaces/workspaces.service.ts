@@ -7,6 +7,7 @@ import {
 import { WorkspaceUserRole } from '@prisma/client';
 import { v4 } from 'uuid';
 
+import { ServerConfig } from '../../../config/server.config';
 import { CreditsService } from '../../global/credits/credits.service';
 import { PineconeService } from '../../global/pinecone/pinecone.service';
 import { PrismaService } from '../../global/prisma/prisma.service';
@@ -45,7 +46,12 @@ export class WorkspacesService {
       data: {
         ...data,
         preferences: {
-          create: {},
+          create: {
+            defaultAgentLlmProvider: ServerConfig.DEFAULT_LLM_PROVIDER,
+            defaultAgentLlmModel: ServerConfig.DEFAULT_LLM_MODEL,
+            defaultTaskNamingLlmProvider: ServerConfig.DEFAULT_LLM_PROVIDER,
+            defaultTaskNamingLlmModel: ServerConfig.DEFAULT_LLM_MODEL,
+          },
         },
         usage: {
           create: {

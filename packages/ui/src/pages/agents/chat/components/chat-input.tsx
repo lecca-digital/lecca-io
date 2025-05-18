@@ -201,7 +201,7 @@ export const ChatInput = ({
           maxHeight={200}
           minHeight={1}
           rows={1}
-          className="px-14 py-4 bg-muted/80 border border-muted-foreground/20"
+          className="px-14 py-4 bg-muted/80 border border-muted-foreground/20 rounded-2xl"
         />
         <div className="absolute flex items-center bottom-2 right-2">
           <Button

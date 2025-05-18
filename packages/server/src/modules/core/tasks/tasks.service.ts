@@ -190,9 +190,17 @@ export class TasksService {
 
       let nameTaskUsage: LanguageModelUsage | null = null;
       if (shouldRenameTask) {
+        const taskNamingLlmProviderClient =
+          this.aiProviderService.getAiLlmProviderClient({
+            aiProvider: agent.taskNamingLlmProvider as AiProvider,
+            llmConnection: agent.taskNamingLlmConnection,
+            llmModel: agent.taskNamingLlmModel,
+            workspaceId: workspaceId,
+          });
+
         nameTaskUsage = await this.nameTask({
           taskId: taskId,
-          llmProviderClient,
+          llmProviderClient: taskNamingLlmProviderClient,
           messagesForContext: messagesForContext as CoreMessage[],
           taskNamingInstructions: agent.taskNamingInstructions,
         });
@@ -787,10 +795,9 @@ export class TasksService {
       const result = await generateText({
         model: llmProviderClient,
         toolChoice: 'none',
-        system: `Generate a succinct name for this task based on the messages provided to you. Only output the name. ${taskNamingInstructions?.trim() ? `Additional naming instructions: ${taskNamingInstructions}` : ''}`,
+        system: `Generate a short name for this task based on the messages provided to you. This will be used to label the conversation. Only output the name. ${taskNamingInstructions?.trim() ? `Additional naming instructions: ${taskNamingInstructions}` : ''}`,
         messages: messagesForContext as CoreMessage[],
         maxRetries: 1,
-        maxTokens: 25,
       });
 
       // Process the result to remove any thinking content
@@ -1029,6 +1036,15 @@ export class TasksService {
         llmModel: true,
         llmProvider: true,
         llmConnection: {
+          select: {
+            id: true,
+            connectionId: true,
+            apiKey: true, //This is assuming we're only supporting api key connections
+          },
+        },
+        taskNamingLlmProvider: true,
+        taskNamingLlmModel: true,
+        taskNamingLlmConnection: {
           select: {
             id: true,
             connectionId: true,
@@ -1381,7 +1397,7 @@ Remember that effective task management demonstrates thoroughness and organizati
 `;
       systemPrompt = subtaskInstructions + '\n\n' + systemPrompt;
     }
-    
+
     // Add message-agent (sub-agent) instructions if the action is available
     if (hasMessageAgentAction) {
       const messageAgentInstructions = `
