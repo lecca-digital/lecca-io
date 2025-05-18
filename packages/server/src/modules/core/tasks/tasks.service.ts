@@ -1354,6 +1354,11 @@ export class TasksService {
       agent.tools as WorkflowNodeForRunner[]
     )?.some((tool) => tool.actionId === 'agent_action_manage-subtasks');
 
+    // Check if message-agent action is available
+    const hasMessageAgentAction = (
+      agent.tools as WorkflowNodeForRunner[]
+    )?.some((tool) => tool.actionId === 'ai_action_message-agent');
+
     // Add subtask management instructions if the action is available
     if (hasManageSubtasksAction) {
       const subtaskInstructions = `
@@ -1375,6 +1380,30 @@ Continue working until all relevant subtasks are completed or clearly marked as 
 Remember that effective task management demonstrates thoroughness and organization.
 `;
       systemPrompt = subtaskInstructions + '\n\n' + systemPrompt;
+    }
+    
+    // Add message-agent (sub-agent) instructions if the action is available
+    if (hasMessageAgentAction) {
+      const messageAgentInstructions = `
+# Sub-Agent Communication Instructions
+
+When messaging a sub-agent:
+
+1. Provide a clear, detailed description of the task you need help with
+2. Include ALL relevant context and information the sub-agent will need to complete their work successfully
+3. If you have specific requirements or constraints, state them explicitly
+4. Submit one clear request at a time rather than multiple questions or tasks
+
+When receiving responses from sub-agents:
+
+1. If the sub-agent asks a question, provide a complete and helpful response
+2. Continue the conversation until the sub-agent has completed their task
+3. Do not end the interaction prematurely - engage with the sub-agent until the task is complete
+4. Remember that each message to a sub-agent costs credits, so make your requests efficient but thorough
+
+Effective delegation to sub-agents helps you solve complex problems more efficiently.
+`;
+      systemPrompt = messageAgentInstructions + '\n\n' + systemPrompt;
     }
 
     return systemPrompt;
