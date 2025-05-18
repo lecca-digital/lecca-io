@@ -1,3 +1,17 @@
+# [0.47.0](https://github.com/lecca-digital/lecca-io/compare/v0.46.0...v0.47.0) (2025-05-18)
+
+
+### Features
+
+* Add gemini 2.5 models ([7cb97a3](https://github.com/lecca-digital/lecca-io/commit/7cb97a3517513977012761dce1b9690376abff0f))
+* Add model for naming tasks ([b111a9f](https://github.com/lecca-digital/lecca-io/commit/b111a9f9f591e67bb46d6c64d25b32a4c199e175))
+* Add o4-mini and claude 3.7 models ([5a26c24](https://github.com/lecca-digital/lecca-io/commit/5a26c24a4a5ae1cab308cc4d159e108eb563d494))
+* Add task naming model configuration ([7796844](https://github.com/lecca-digital/lecca-io/commit/77968444bc3b257c1e54e00f6a64c20db6ade67e))
+* Add workspace and project agent default configs ([61c77d3](https://github.com/lecca-digital/lecca-io/commit/61c77d3f402aed4898c7a4d04ae6dbdf8ee84bac))
+* Hide think tags and add GPT 4.1 ([2297623](https://github.com/lecca-digital/lecca-io/commit/229762369c92a72cb5093491a2a876a14940f4ff))
+* Inject system prompt for message agent tool ([1c5337f](https://github.com/lecca-digital/lecca-io/commit/1c5337ff1815ca7e464cd2c0d41b4b8c74e2e647))
+* Round chat input and change ring size ([dd48d8d](https://github.com/lecca-digital/lecca-io/commit/dd48d8d3f5aa250bb9020f7b36e91fe0bcf5b66d))
+
 # [0.46.0](https://github.com/lecca-digital/lecca-io/compare/v0.45.0...v0.46.0) (2025-05-18)
 
 
