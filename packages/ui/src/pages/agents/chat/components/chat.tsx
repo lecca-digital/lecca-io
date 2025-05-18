@@ -406,7 +406,7 @@ export function Chat(props: Props) {
         ref={messagesEndRef}
         className="overflow-y-auto flex flex-col h-full w-full overflow-x-hidden"
       >
-        <div className="relative flex flex-col h-full w-full max-w-[1000px] mx-auto space-y-6 pb-16 sm:pb-20">
+        <div className="relative flex flex-col h-full w-full max-w-[800px] mx-auto space-y-6 pb-16 sm:pb-20">
           {!messages.length ? (
             <div className="mt-10 space-y-4 pb-20 px-3 sm:px-0">
               <NewChatWelcome agent={props.agent} />
@@ -464,7 +464,7 @@ export function Chat(props: Props) {
         </div>
       </div>
       {messages.length > 0 && (
-        <div className="space-y-4 max-w-[1050px] pb-10 sm:pb-0 sm:px-10 mx-auto w-full">
+        <div className="space-y-4 max-w-[800px] pb-10 sm:pb-0 px-5 sm:px-10 mx-auto w-full">
           <ChatInput
             hasToolsButCannotUseThem={hasToolsButCannotUseThem}
             isLoading={isLoadingResponse}
