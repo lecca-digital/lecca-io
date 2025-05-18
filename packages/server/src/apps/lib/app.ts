@@ -208,6 +208,7 @@ export class App {
             tokenUrl: oAuth2Connection.tokenUrl,
             clientId: oAuth2Connection.getClientId(),
             clientSecret: oAuth2Connection.getClientSecret(),
+            afterTokenExchange: oAuth2Connection.afterTokenExchange,
             scopes: oAuth2Connection.scopes,
             scopeDelimiter: oAuth2Connection.scopeDelimiter,
             inputConfig: oAuth2Connection.inputConfig,

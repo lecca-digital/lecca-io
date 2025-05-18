@@ -1,3 +1,46 @@
+# [0.45.0](https://github.com/lecca-digital/lecca-io/compare/v0.44.0...v0.45.0) (2025-05-05)
+
+
+### Bug Fixes
+
+* Json Parse ([d38b2ce](https://github.com/lecca-digital/lecca-io/commit/d38b2ce827f118317129cb3d26b9623982b7d37b))
+
+
+### Features
+
+* **apps:** Add direct-message trigger to slack ([68db305](https://github.com/lecca-digital/lecca-io/commit/68db305e32ad12db3369dd4bf18bfd19ebe47cac))
+* **apps:** Add linear get issue action ([9deff3a](https://github.com/lecca-digital/lecca-io/commit/9deff3a694ffa9c0f5e378be2bf2ce66581fafc5))
+
+# [0.44.0](https://github.com/lecca-digital/lecca-io/compare/v0.43.0...v0.44.0) (2025-05-03)
+
+
+### Features
+
+* **apps:** Add more linear actions ([e659520](https://github.com/lecca-digital/lecca-io/commit/e65952078576e9be61a8c923198542a587809fe3))
+
+# [0.43.0](https://github.com/lecca-digital/lecca-io/compare/v0.42.0...v0.43.0) (2025-05-03)
+
+
+### Features
+
+* **apps:** Linear webhook triggers and afterTokenExchange method for retrieving metadata ([1dd1a23](https://github.com/lecca-digital/lecca-io/commit/1dd1a2305b7f3ed525841574d6a01238d75188f3))
+
+# [0.42.0](https://github.com/lecca-digital/lecca-io/compare/v0.41.0...v0.42.0) (2025-05-02)
+
+
+### Features
+
+* **apps:** Add figma and linear integrations ([348a9b1](https://github.com/lecca-digital/lecca-io/commit/348a9b122ee77d3f06e54c923f73c48884b7ae47))
+* **apps:** Add list-repositories.action.ts to github and list private repos ([1f431c2](https://github.com/lecca-digital/lecca-io/commit/1f431c288a847102f7836d02b40535ce1c0beae8))
+
+# [0.41.0](https://github.com/lecca-digital/lecca-io/compare/v0.40.0...v0.41.0) (2025-04-28)
+
+
+### Features
+
+* Add claude-pr-generator as workflow to be dispatched ([dded7de](https://github.com/lecca-digital/lecca-io/commit/dded7de46e302b292db7c0b514abde9a47c4f53b))
+* **apps:** Add github actions and text file reader ([5d8af8d](https://github.com/lecca-digital/lecca-io/commit/5d8af8d715c7aa1a83ad267deb9301b474667a1d))
+
 # [0.40.0](https://github.com/lecca-digital/lecca-io/compare/v0.39.0...v0.40.0) (2025-04-17)
 
 

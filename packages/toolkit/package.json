@@ -1,6 +1,6 @@
 {
   "name": "@lecca-io/toolkit",
-  "version": "0.40.0",
+  "version": "0.45.0",
   "publishConfig": {
     "access": "public"
   },

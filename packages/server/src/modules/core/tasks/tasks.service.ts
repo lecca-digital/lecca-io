@@ -36,6 +36,7 @@ import { TaskExpansionDto } from './dto/task-expansion.dto';
 import { TaskFilterByDto } from './dto/task-filter-by.dto';
 import { TaskIncludeTypeDto } from './dto/task-include-type.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { SubTasksService } from './subtasks.service';
 
 @Injectable()
 export class TasksService {
@@ -45,6 +46,7 @@ export class TasksService {
     private workflowAppService: WorkflowAppsService,
     private creditsService: CreditsService,
     private aiProviderService: AiProviderService,
+    private subTasksService: SubTasksService,
   ) {}
 
   messageTaskOrCreateTaskIfNotFound = async (
@@ -196,12 +198,21 @@ export class TasksService {
         });
       }
 
+      // Get base system prompt
+      const baseSystemPrompt = agent.instructions || '';
+
+      // Inject tool-specific instructions into the system prompt
+      const systemPrompt = this.#injectToolSystemPrompts({
+        agent,
+        baseSystemPrompt,
+      });
+
       if (shouldStream) {
         const result = streamText({
           model: llmProviderClient,
           toolChoice: 'auto',
           tools,
-          system: agent.instructions || undefined,
+          system: systemPrompt,
           messages: messagesForContext as CoreMessage[],
           maxRetries: agent.maxRetries == null ? undefined : agent.maxRetries,
           frequencyPenalty:
@@ -279,7 +290,7 @@ export class TasksService {
           model: llmProviderClient,
           toolChoice: 'auto',
           tools,
-          system: agent.instructions || undefined,
+          system: systemPrompt,
           messages: messagesForContext as CoreMessage[],
           maxRetries: agent.maxRetries == null ? undefined : agent.maxRetries,
           frequencyPenalty:
@@ -474,6 +485,7 @@ export class TasksService {
         createdAt: expansion?.createdAt ?? false,
         updatedAt: expansion?.updatedAt ?? false,
         customIdentifier: expansion?.customIdentifier ?? false,
+        subTasks: expansion?.subTasks,
         messages: expansion?.messages
           ? {
               select: {
@@ -602,6 +614,7 @@ export class TasksService {
         description: expansion?.description ?? false,
         createdAt: expansion?.createdAt ?? false,
         updatedAt: expansion?.updatedAt ?? false,
+        subTasks: expansion?.subTasks,
         messages: expansion?.messages
           ? {
               select: {
@@ -859,6 +872,47 @@ export class TasksService {
     });
 
     return !!belongs;
+  };
+
+  /**
+   * Manage subtasks for a task - create, update, complete, or delete subtasks
+   */
+  manageSubTasks = async ({
+    taskId,
+    newSubTasks,
+    completedSubTasks,
+    blockedSubTasks,
+    pendingSubTasks,
+    deletedSubTasks,
+  }: {
+    taskId: string;
+    newSubTasks?: string[];
+    completedSubTasks?: string[];
+    blockedSubTasks?: string[];
+    pendingSubTasks?: string[];
+    deletedSubTasks?: string[];
+  }) => {
+    // Verify task exists
+    const task = await this.prisma.task.findUnique({
+      where: { id: taskId },
+      select: { id: true },
+    });
+
+    if (!task) {
+      throw new NotFoundException('Task not found');
+    }
+
+    // Use the SubTasksService to manage the subtasks
+    const updatedSubTasks = await this.subTasksService.manageSubTasks({
+      taskId,
+      newSubTasks,
+      completedSubTasks,
+      blockedSubTasks,
+      pendingSubTasks,
+      deletedSubTasks,
+    });
+
+    return updatedSubTasks;
   };
 
   #addDataToInputMessages = ({
@@ -1276,6 +1330,50 @@ export class TasksService {
     return tools;
   };
 
+  /**
+   * Injects tool-specific system prompts based on which tools are available to the agent
+   * @returns Modified system prompt with tool-specific instructions
+   */
+  #injectToolSystemPrompts = ({
+    agent,
+    baseSystemPrompt,
+  }: {
+    agent: Awaited<ReturnType<TasksService['getAgentDataForMessaging']>>;
+    baseSystemPrompt: string;
+  }): string => {
+    let systemPrompt = baseSystemPrompt;
+
+    // Check if manage-subtasks action is available
+    const hasManageSubtasksAction = (
+      agent.tools as WorkflowNodeForRunner[]
+    )?.some((tool) => tool.actionId === 'agent_action_manage-subtasks');
+
+    // Add subtask management instructions if the action is available
+    if (hasManageSubtasksAction) {
+      const subtaskInstructions = `
+# Task Management Instructions
+
+Before you begin working on your task:
+1. First, use the Manage Subtasks tool to create a plan with clear subtasks.
+2. Break down complex tasks into smaller, manageable subtasks.
+
+As you work:
+1. Keep your subtasks updated as you make progress:
+   - Mark subtasks as complete when you finish them
+   - Mark subtasks as blocked if you cannot proceed
+   - Add new subtasks if you discover additional work needed
+   - Remove subtasks that are no longer relevant
+
+Continue working until all relevant subtasks are completed or clearly marked as blocked with explanations.
+
+Remember that effective task management demonstrates thoroughness and organization.
+`;
+      systemPrompt = subtaskInstructions + '\n\n' + systemPrompt;
+    }
+
+    return systemPrompt;
+  };
+
   #getPhoneTools = async ({
     workspaceId,
     projectId,
@@ -1598,6 +1696,14 @@ export class TasksService {
             createdAt: 'asc',
           },
         },
+        subTasks: {
+          select: {
+            id: true,
+            name: true,
+            status: true,
+            description: true,
+          },
+        },
       },
     });
 
@@ -1681,4 +1787,17 @@ type MessageTaskProps = {
   simpleResponse?: boolean;
 
   shouldRenameTask?: boolean;
+  shouldInitializeSubtasks?: boolean;
+
+  /**
+   * Current subtask loop count, used to prevent infinite loops
+   * `default: 0`
+   */
+  subtaskLoopCount?: number;
+
+  /**
+   * Maximum number of subtask loops to perform
+   * `default: 5`
+   */
+  maxSubtaskLoops?: number;
 };

@@ -380,7 +380,7 @@ export class WorkflowAppsService {
     try {
       stateToken = JSON.parse(decodeURIComponent(req.query.state as string));
     } catch {
-      //Sometimes it doesn't need to be decoded because the oauth app does it for us
+      //Sometimes it doesn't need to be parsed because the oauth app does it for us
       stateToken = decodeURIComponent(req.query.state as string);
     }
 

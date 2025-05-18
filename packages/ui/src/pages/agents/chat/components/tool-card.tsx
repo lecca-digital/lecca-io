@@ -40,7 +40,6 @@ export function MessageToolCard({
   });
 
   const fields = useMemo((): ToolRenderFields => {
-    console.log('processing fields');
     const toolName = tool.toolName;
     const toolType = getToolType({
       toolName: tool.toolName,
@@ -208,11 +207,8 @@ export function MessageToolCard({
   // Extract toolId from toolName
   const toolId = tool.data?.actionId;
 
-  console.log('tool.data', tool.data);
-  console.log('toolId', toolId);
   // Check if a component exists for this toolId in the toolComponentsMap
   const ToolComponent = toolId ? toolComponentsMap[toolId] : undefined;
-  console.log('ToolComponent', ToolComponent);
 
   // If we have a matching component, render it
   if (ToolComponent) {

@@ -1,4 +1,5 @@
-import { ConnectionType } from '../../types/connection.types';
+import { InjectedServices } from '../../types';
+import { ConnectionData, ConnectionType } from '../../types/connection.types';
 import { InputConfig } from '../../types/input-config.types';
 
 export function createOAuth2Connection(args: CreateOAuth2ConnectionArgs) {
@@ -16,6 +17,13 @@ export type CreateOAuth2ConnectionArgs = {
   tokenUrl: string;
   getClientId: () => string | undefined;
   getClientSecret: () => string | undefined;
+  /**
+   * After the token exchange, we can call an API to get more information about the user.
+   * Then we will store that information in the connection metadata.
+   */
+  afterTokenExchange?: (
+    args: AfterTokenExchangeArgs,
+  ) => Promise<AfterTokenExchangeResponse>;
   scopes: string[];
   /**
    * Default's to a comma.
@@ -45,6 +53,19 @@ export type CreateOAuth2ConnectionArgs = {
    */
   redirectToLocalHostInDevelopment?: boolean;
 };
+
+export type AfterTokenExchangeArgs = {
+  accessToken: ConnectionData['accessToken'];
+  refreshToken: ConnectionData['refreshToken'];
+  http: InjectedServices['http'];
+  workspaceId: string;
+};
+
+export type AfterTokenExchangeResponse =
+  | {
+      [key: string]: any;
+    }
+  | undefined;
 
 /**
  * Most APIs use the body to send the authorization token
