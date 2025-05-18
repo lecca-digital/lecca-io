@@ -15,12 +15,17 @@ export default function LayoutComponent() {
     <PageSideNavLink
       item={{ title: 'Preferences', to: '/workspace-preferences' }}
     />,
+    enabledFeatures.AGENTS && (
+      <PageSideNavLink item={{ title: 'Agents', to: '/workspace-agents' }} />
+    ),
     enabledFeatures.BILLING && (
       <PageSideNavLink item={{ title: 'Billing', to: '/workspace-billing' }} />
     ),
-    <PageSideNavLink
-      item={{ title: 'Invitations', to: '/workspace-invitations' }}
-    />,
+    enabledFeatures.TEAMS && (
+      <PageSideNavLink
+        item={{ title: 'Invitations', to: '/workspace-invitations' }}
+      />
+    ),
   ];
 
   return (

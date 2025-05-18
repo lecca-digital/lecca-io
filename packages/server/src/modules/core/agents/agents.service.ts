@@ -127,18 +127,37 @@ export class AgentsService {
       delete (data as UpdateAgentDto).phoneAccess;
     }
 
+    const project = await this.#getProjectSettingsByProjectId({
+      projectId,
+    });
+
     const newAgent = await this.prisma.agent.create({
       data: {
         ...data,
         triggers: undefined, //We'll set this in the update along with the other properties. Just adding this here to remove type warning
-        llmProvider: data.llmProvider ?? ServerConfig.DEFAULT_LLM_PROVIDER,
-        llmModel: data.llmModel ?? ServerConfig.DEFAULT_LLM_MODEL,
+        llmProvider:
+          data.llmProvider ??
+          project.defaultAgentLlmProvider ??
+          ServerConfig.DEFAULT_LLM_PROVIDER,
+        llmModel:
+          data.llmModel ??
+          project.defaultAgentLlmModel ??
+          ServerConfig.DEFAULT_LLM_MODEL,
         FK_llmConnectionId: llmConnectionId,
         taskNamingLlmProvider:
-          data.taskNamingLlmProvider ?? ServerConfig.DEFAULT_LLM_PROVIDER,
+          data.taskNamingLlmProvider ??
+          project.defaultTaskNamingLlmProvider ??
+          ServerConfig.DEFAULT_LLM_PROVIDER,
         taskNamingLlmModel:
-          data.taskNamingLlmModel ?? ServerConfig.DEFAULT_LLM_MODEL,
-        FK_taskNamingLlmConnectionId: taskNamingLlmConnectionId,
+          data.taskNamingLlmModel ??
+          project.defaultTaskNamingLlmModel ??
+          ServerConfig.DEFAULT_LLM_MODEL,
+        // taskNamingInstructions ?? project.taskNa
+        taskNamingInstructions:
+          project.defaultTaskNamingInstructions ?? data.taskNamingInstructions,
+        FK_taskNamingLlmConnectionId:
+          project.defaultTaskNamingLlmConnection?.id ??
+          taskNamingLlmConnectionId,
         FK_projectId: projectId,
       },
       select: {
@@ -1475,6 +1494,32 @@ export class AgentsService {
       type: 'workflow',
       animated: true,
     };
+  };
+
+  #getProjectSettingsByProjectId = async ({
+    projectId,
+  }: {
+    projectId: string;
+  }) => {
+    const project = await this.prisma.project.findUnique({
+      where: {
+        id: projectId,
+      },
+      select: {
+        defaultAgentLlmModel: true,
+        defaultAgentLlmProvider: true,
+        defaultTaskNamingLlmConnection: {
+          select: {
+            id: true,
+          },
+        },
+        defaultTaskNamingLlmModel: true,
+        defaultTaskNamingLlmProvider: true,
+        defaultTaskNamingInstructions: true,
+      },
+    });
+
+    return project;
   };
 
   async #validateConnectionsBelongToProject({

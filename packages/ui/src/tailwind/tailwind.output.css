@@ -2416,6 +2416,10 @@ body {
   border-radius: calc(var(--radius) - 4px);
 }
 
+.rounded-2xl {
+  border-radius: 1rem;
+}
+
 .rounded-r-md {
   border-top-right-radius: calc(var(--radius) - 2px);
   border-bottom-right-radius: calc(var(--radius) - 2px);
@@ -5060,6 +5064,14 @@ body {
 
   .lg\:max-w-\[900px\] {
     max-width: 900px;
+  }
+
+  .lg\:max-w-3xl {
+    max-width: 48rem;
+  }
+
+  .lg\:max-w-4xl {
+    max-width: 56rem;
   }
 
   .lg\:grid-cols-2 {

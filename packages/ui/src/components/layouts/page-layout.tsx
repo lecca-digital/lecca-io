@@ -56,7 +56,7 @@ export default function PageLayout({
           <aside className="lg:w-1/5 p-4">
             <PageSideNav items={leftRailNavigationItems} />
           </aside>
-          <div className="flex-1 lg:max-w-2xl w-full px-4">{children}</div>
+          <div className="flex-1 lg:max-w-4xl w-full px-4">{children}</div>
         </div>
       ) : (
         <ScrollArea>

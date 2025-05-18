@@ -321,7 +321,7 @@ export function AgentBuilderAdvancedSettingsContent({ agent }: PropType) {
           <LlmFormFields
             form={form}
             llmProviderFieldName="taskNamingLlmProvider"
-            llmProviderFieldLabel="Task Naming AI Provider"
+            llmProviderFieldLabel="Task Naming Provider"
             llmProviderFieldDescription="AI Provider of LLM"
             llmModelFieldName="taskNamingLlmModel"
             llmModelFieldLabel="Task Naming LLM"
