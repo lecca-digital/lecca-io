@@ -56,6 +56,16 @@ export const DEFAULT_PROVIDERS: AiProviders = {
           output: 1000,
         },
       },
+      'o4-mini': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 6667, // $0.15 per million tokens = 6,666,667 tokens per credit
+          output: 1667, // $0.60 per million tokens = 1,666,667 tokens per credit
+        },
+      },
       'o3-mini': {
         vision: true,
         tools: true,
@@ -169,6 +179,26 @@ export const DEFAULT_PROVIDERS: AiProviders = {
   anthropic: {
     appConnectionId: 'anthropic_connection_api-key',
     languageModels: {
+      'claude-3-7-sonnet-latest': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 200, // $3 per million tokens
+          output: 40, // $15 per million tokens
+        },
+      },
+      'claude-3-7-haiku-latest': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 600, // $0.80 per million tokens
+          output: 120, // $4 per million tokens
+        },
+      },
       'claude-3-5-sonnet-latest': {
         vision: true,
         tools: true,
