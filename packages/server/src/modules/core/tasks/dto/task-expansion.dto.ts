@@ -40,4 +40,8 @@ export class TaskExpansionDto {
   @IsOptional()
   @IsBoolean()
   customIdentifier?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  subTasks?: boolean;
 }

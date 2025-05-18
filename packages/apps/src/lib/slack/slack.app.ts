@@ -9,6 +9,7 @@ import { replyToMessage } from './actions/reply-to-message.action';
 import { sendMessageToChannel } from './actions/send-message-to-channel.action';
 import { sendMessageToUser } from './actions/send-message-to-user.action';
 import { slackOAuth2 } from './connections/slack.oauth2';
+import { directMessage } from './triggers/direct-message.trigger';
 import { newMessage } from './triggers/new-message.trigger';
 
 export const slack = createApp({
@@ -22,11 +23,12 @@ export const slack = createApp({
     sendMessageToChannel,
     replyToMessage,
     getThreadMessages,
+    // searchMessages,
     createChannel,
     listChannels,
     listUsers,
   ],
-  triggers: [newMessage],
+  triggers: [newMessage, directMessage],
   connections: [slackOAuth2],
   verifyWebhookRequest: ({ webhookBody, webhookHeaders }) => {
     if (!process.env.INTEGRATION_SLACK_SIGNING_SECRET) {

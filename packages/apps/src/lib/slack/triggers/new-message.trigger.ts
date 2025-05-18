@@ -48,6 +48,11 @@ export const newMessage = createAppWebhookTrigger<
     }
   },
   run: async ({ inputData, configValue }) => {
+    // Filter out direct messages - those will be handled by directMessage trigger
+    if (inputData?.body?.event?.channel_type === 'im') {
+      return [];
+    }
+    
     if (
       configValue.userId !== 'any' &&
       inputData?.body?.event?.user !== configValue.userId

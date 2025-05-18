@@ -109,6 +109,14 @@ export type InjectedServices = {
       agentId: string;
     }) => Promise<any>; //TODO
     messageTask: (args: MessageTaskProps) => Promise<any>; //TODO
+    manageSubTasks: (args: {
+      taskId: string;
+      newSubTasks?: string[];
+      completedSubTasks?: string[];
+      blockedSubTasks?: string[];
+      pendingSubTasks?: string[];
+      deletedSubTasks?: string[];
+    }) => Promise<any>;
   };
   knowledge: {
     create: (args: {
@@ -124,6 +132,10 @@ export type InjectedServices = {
     }) => Promise<string[]>;
     saveUploadedTextToKnowledge: (args: {
       data: any; //TODO
+      knowledgeId: string;
+      workspaceId: string;
+    }) => Promise<boolean>;
+    clearKnowledge: (args: {
       knowledgeId: string;
       workspaceId: string;
     }) => Promise<boolean>;
@@ -224,6 +236,13 @@ type HttpRequestArgs = {
   headers?: AxiosRequestConfig['headers'];
   params?: AxiosRequestConfig['params'];
   data?: AxiosRequestConfig['data'];
+  responseType?:
+    | 'arraybuffer'
+    | 'blob'
+    | 'document'
+    | 'json'
+    | 'text'
+    | 'stream';
   /**
    * For logging purposes
    */

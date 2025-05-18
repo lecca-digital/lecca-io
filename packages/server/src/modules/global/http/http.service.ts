@@ -30,6 +30,7 @@ export class HttpService {
     headers?: AxiosRequestConfig['headers'];
     params?: AxiosRequestConfig['params'];
     data?: AxiosRequestConfig['data'];
+    responseType?: 'arraybuffer' | 'blob' | 'document' | 'json' | 'text' | 'stream';
     /**
      * For logging purposes
      */
@@ -45,6 +46,7 @@ export class HttpService {
           ...options.headers,
         },
         data: options.data,
+        responseType: options.responseType,
       });
       return response;
     } catch (error) {
@@ -55,7 +57,7 @@ export class HttpService {
         status: error.response?.status || 500,
       });
       throw new HttpException(
-        error.response?.data || 'Request failed',
+        JSON.stringify(error.response?.data || error.message, null, 2),
         error.response?.status || 500,
       );
     }

@@ -6,6 +6,36 @@ export const DEFAULT_PROVIDERS: AiProviders = {
   openai: {
     appConnectionId: 'openai_connection_api-key',
     languageModels: {
+      'gpt-4.1': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 500, // $2 per million tokens = 500,000 tokens per credit
+          output: 125, // $8 per million tokens = 125,000 tokens per credit
+        },
+      },
+      'gpt-4.1-mini': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 2500, // $0.40 per million tokens = 2,500,000 tokens per credit
+          output: 625, // $1.60 per million tokens = 625,000 tokens per credit
+        },
+      },
+      'gpt-4.1-nano': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 10000, // $0.10 per million tokens = 10,000,000 tokens per credit
+          output: 2500, // $0.40 per million tokens = 2,500,000 tokens per credit
+        },
+      },
       'gpt-4o': {
         vision: true,
         tools: true,
@@ -24,6 +54,16 @@ export const DEFAULT_PROVIDERS: AiProviders = {
         creditConversionData: {
           input: 4000,
           output: 1000,
+        },
+      },
+      'o4-mini': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 6667, // $0.15 per million tokens = 6,666,667 tokens per credit
+          output: 1667, // $0.60 per million tokens = 1,666,667 tokens per credit
         },
       },
       'o3-mini': {
@@ -139,6 +179,26 @@ export const DEFAULT_PROVIDERS: AiProviders = {
   anthropic: {
     appConnectionId: 'anthropic_connection_api-key',
     languageModels: {
+      'claude-3-7-sonnet-latest': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 200, // $3 per million tokens
+          output: 40, // $15 per million tokens
+        },
+      },
+      'claude-3-7-haiku-latest': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 600, // $0.80 per million tokens
+          output: 120, // $4 per million tokens
+        },
+      },
       'claude-3-5-sonnet-latest': {
         vision: true,
         tools: true,
@@ -190,6 +250,26 @@ export const DEFAULT_PROVIDERS: AiProviders = {
   gemini: {
     appConnectionId: 'gemini_connection_api-key',
     languageModels: {
+      'gemini-2.5-flash': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 6667, // $0.15 per million tokens = 6,666,667 tokens per credit
+          output: 1667, // $0.60 per million tokens = 1,666,667 tokens per credit
+        },
+      },
+      'gemini-2.5-pro': {
+        vision: true,
+        tools: true,
+        canStreamText: true,
+        canStreamTools: true,
+        creditConversionData: {
+          input: 800, // $1.25 per million tokens = 800,000 tokens per credit
+          output: 100, // $10.00 per million tokens = 100,000 tokens per credit
+        },
+      },
       'gemini-2.0-flash-exp': {
         vision: true,
         tools: true,

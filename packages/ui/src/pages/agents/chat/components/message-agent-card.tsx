@@ -22,6 +22,9 @@ export const MessageAgentCard = ({
     return null;
   }
 
+  // Process the textContent to remove the thinking content
+  const processedContent = textContent.replace(/<think>[\s\S]*?<\/think>/g, '');
+
   return (
     <MessageCardWrapper text={textContent} createdAt={createdAt}>
       <Link to={`/redirect?redirect=/agents/${agent.id}`}>
@@ -50,7 +53,7 @@ export const MessageAgentCard = ({
         </div>
       </Link>
       <div className="ml-12">
-        <MarkdownViewer>{textContent}</MarkdownViewer>
+        <MarkdownViewer>{processedContent}</MarkdownViewer>
       </div>
     </MessageCardWrapper>
   );

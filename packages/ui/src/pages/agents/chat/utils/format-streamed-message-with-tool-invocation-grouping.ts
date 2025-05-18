@@ -40,6 +40,7 @@ export function formatStreamedMessageWithToolInvocationGrouping({
           id: v4(),
           role: 'assistant',
           content: '',
+          parts: [],
           data: {
             agentId: currentAssistantId,
           },

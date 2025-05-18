@@ -4,7 +4,10 @@ import { addDatabaseItem } from './actions/add-database-item.action';
 import { appendPage } from './actions/append-to-page.action';
 import { createPage } from './actions/create-page.action';
 import { getDatabase } from './actions/get-database.action';
-import { getPage } from './actions/get-page.action';
+import { getDatabaseItemText } from './actions/get-database-item-text.action';
+import { getDatabaseItems } from './actions/get-database-items.action';
+import { getPageContents } from './actions/get-page-contents.action';
+import { getPageText } from './actions/get-page-text.action';
 import { listDatabases } from './actions/list-databases.action';
 import { updateDatabaseItem } from './actions/update-database-item.action';
 import { notionOAuth2 } from './connections/notion.oauth2';
@@ -22,9 +25,12 @@ export const notion = createApp({
     updateDatabaseItem,
     createPage,
     appendPage,
-    getPage,
+    getPageContents,
+    getPageText,
     listDatabases,
     getDatabase,
+    getDatabaseItems,
+    getDatabaseItemText,
   ],
   triggers: [pageUpdated, newDatabaseItem, updatedDatabaseItem],
   connections: [notionOAuth2],

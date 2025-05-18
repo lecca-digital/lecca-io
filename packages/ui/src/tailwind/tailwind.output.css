@@ -1909,6 +1909,14 @@ body {
   max-width: min-content;
 }
 
+.max-w-\[8000px\] {
+  max-width: 8000px;
+}
+
+.max-w-\[800px\] {
+  max-width: 800px;
+}
+
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -2420,6 +2428,14 @@ body {
   border-radius: calc(var(--radius) - 4px);
 }
 
+.rounded-xl {
+  border-radius: 0.75rem;
+}
+
+.rounded-2xl {
+  border-radius: 1rem;
+}
+
 .rounded-r-md {
   border-top-right-radius: calc(var(--radius) - 2px);
   border-bottom-right-radius: calc(var(--radius) - 2px);
@@ -2834,6 +2850,10 @@ body {
 
 .p-6 {
   padding: 1.5rem;
+}
+
+.p-8 {
+  padding: 2rem;
 }
 
 .p-\[1px\] {
@@ -4218,6 +4238,10 @@ body {
 
 .focus-visible\:ring-offset-2:focus-visible {
   --tw-ring-offset-width: 2px;
+}
+
+.focus-visible\:ring-offset-0:focus-visible {
+  --tw-ring-offset-width: 0px;
 }
 
 .focus-visible\:ring-offset-background:focus-visible {

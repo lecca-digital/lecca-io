@@ -161,12 +161,14 @@ export const searchKnowledge = createAction({
     });
 
     return {
+      knowledgeId: configValue.knowledgeId,
       results: contextFromKnowledge ?? [],
     };
   },
 
   mockRun: async () => {
     return {
+      knowledgeId: 'knowledgeId',
       results: ['result 1', 'result 2', 'result 3'],
     };
   },

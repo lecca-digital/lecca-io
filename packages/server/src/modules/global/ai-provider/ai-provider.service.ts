@@ -50,7 +50,7 @@ export class AiProviderService {
                     canStreamText: true,
                     //Ollama does not support streaming tools.
                     //Even with the ollama-ai-provider I couldn't really get it to work.
-                    canStreamTools: false,
+                    canStreamTools: true,
                     creditConversionData: {
                       //This doesn't really matter, since it's only on local host at the moment.
                       //And credits are not being used locally for the community.

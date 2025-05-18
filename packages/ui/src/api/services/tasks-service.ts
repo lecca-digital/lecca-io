@@ -105,6 +105,7 @@ export default class TasksService extends ApiLibraryHelper {
             'messages',
             'messageCreatedAt',
             'messageUsage',
+            'subTasks',
           ],
           ...config?.params,
         },

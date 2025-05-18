@@ -1,4 +1,8 @@
-import { InputConfig } from '@lecca-io/toolkit';
+import {
+  AfterTokenExchangeArgs,
+  AfterTokenExchangeResponse,
+  InputConfig,
+} from '@lecca-io/toolkit';
 import { BadRequestException } from '@nestjs/common';
 import { Request, Response } from 'express';
 
@@ -98,6 +102,10 @@ export class OAuth2Connection extends Connection {
     this.extraAuthHeaders = args.extraAuthHeaders || null;
     this.pkce = args.pkce || false;
 
+    if (args.afterTokenExchange) {
+      this.afterTokenExchange = args.afterTokenExchange;
+    }
+
     this.connectionType = 'oauth2';
   }
 
@@ -142,6 +150,10 @@ export class OAuth2Connection extends Connection {
   extraAuthHeaders: Record<string, string> | null;
 
   pkce: boolean;
+
+  afterTokenExchange?: (
+    args: AfterTokenExchangeArgs,
+  ) => Promise<AfterTokenExchangeResponse>;
 
   async generateAuthorizeUrl(args: GenerateAuthorizeUrlArgs): Promise<string> {
     if (ServerConfig.ENVIRONMENT === 'development') {
@@ -263,9 +275,45 @@ export class OAuth2Connection extends Connection {
       workspaceId: undefined, //We could track when they authenticate, but not gonna worry about this now
     });
 
-    const { access_token, refresh_token, ...metadata } = result.data;
+    let tokenData = result.data;
 
-    if (result.data.access_token) {
+    if (
+      typeof result.data === 'string' &&
+      result.data.includes('access_token=')
+    ) {
+      // Handle GitHub's URL-encoded response format
+      // There may be other auth flows that return a string.
+      const params = new URLSearchParams(result.data);
+      tokenData = {};
+      for (const [key, value] of params.entries()) {
+        tokenData[key] = value;
+      }
+    }
+
+    const { access_token, refresh_token, ...metadata } = tokenData;
+
+    if (access_token) {
+      // If there's an afterTokenExchange function, call it to get additional metadata
+      if (this.afterTokenExchange) {
+        try {
+          const additionalMetadata = await this.afterTokenExchange({
+            accessToken: access_token,
+            refreshToken: refresh_token,
+            http: this.app.http,
+            workspaceId: state.workspaceId,
+          });
+
+          // Merge the additional metadata with the existing metadata
+          if (additionalMetadata) {
+            Object.assign(metadata, additionalMetadata);
+          }
+        } catch (error) {
+          console.error('Error in afterTokenExchange:', error);
+          // Continue even if afterTokenExchange fails? Or should we throw an error for the user?
+          // Currently, if it fails some webhook events may not be sent because we need that metadata.
+        }
+      }
+
       return await this.connectOAuth2App({
         res: args.res,
         state,
@@ -336,6 +384,26 @@ export class OAuth2Connection extends Connection {
 
     // Extract the access_token, refresh_token, and any additional metadata
     const { access_token, refresh_token, ...metadata } = result.data;
+
+    // If there's an afterTokenExchange function, call it to get additional metadata
+    if (this.afterTokenExchange && access_token) {
+      try {
+        const additionalMetadata = await this.afterTokenExchange({
+          accessToken: access_token,
+          refreshToken: refresh_token,
+          http: this.app.http,
+          workspaceId: args.workspaceId,
+        });
+        
+        // Merge the additional metadata with the existing metadata
+        if (additionalMetadata) {
+          Object.assign(metadata, additionalMetadata);
+        }
+      } catch (error) {
+        console.error('Error in afterTokenExchange during token refresh:', error);
+        // Continue even if afterTokenExchange fails
+      }
+    }
 
     // Update the connection with the new access token, refresh token, and metadata
     await this.app.connection.update({
@@ -520,6 +588,9 @@ export type OAuth2ConnectionConstructorArgs = ConnectionConstructorArgs & {
   tokenUrl: string;
   clientId: string | undefined;
   clientSecret: string | undefined;
+  afterTokenExchange?: (
+    args: AfterTokenExchangeArgs,
+  ) => Promise<AfterTokenExchangeResponse>;
   scopes: string[];
   scopeDelimiter?: string;
   authorizationMethod?: OAuth2AuthorizationMethod;

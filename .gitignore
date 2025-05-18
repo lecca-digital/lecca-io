@@ -51,3 +51,5 @@ Thumbs.db
 
 vite.config.*.timestamp*
 .vercel
+
+**/.claude/settings.local.json

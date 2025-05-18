@@ -18,7 +18,7 @@ import {
   generateText,
   streamText,
 } from 'ai';
-import { Message } from 'ai/react';
+import { Message } from 'ai';
 import { z } from 'zod';
 
 import { JwtUser } from '../../../types/jwt-user.type';
@@ -36,6 +36,7 @@ import { TaskExpansionDto } from './dto/task-expansion.dto';
 import { TaskFilterByDto } from './dto/task-filter-by.dto';
 import { TaskIncludeTypeDto } from './dto/task-include-type.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { SubTasksService } from './subtasks.service';
 
 @Injectable()
 export class TasksService {
@@ -45,6 +46,7 @@ export class TasksService {
     private workflowAppService: WorkflowAppsService,
     private creditsService: CreditsService,
     private aiProviderService: AiProviderService,
+    private subTasksService: SubTasksService,
   ) {}
 
   messageTaskOrCreateTaskIfNotFound = async (
@@ -196,12 +198,21 @@ export class TasksService {
         });
       }
 
+      // Get base system prompt
+      const baseSystemPrompt = agent.instructions || '';
+
+      // Inject tool-specific instructions into the system prompt
+      const systemPrompt = this.#injectToolSystemPrompts({
+        agent,
+        baseSystemPrompt,
+      });
+
       if (shouldStream) {
         const result = streamText({
           model: llmProviderClient,
           toolChoice: 'auto',
           tools,
-          system: agent.instructions || undefined,
+          system: systemPrompt,
           messages: messagesForContext as CoreMessage[],
           maxRetries: agent.maxRetries == null ? undefined : agent.maxRetries,
           frequencyPenalty:
@@ -279,7 +290,7 @@ export class TasksService {
           model: llmProviderClient,
           toolChoice: 'auto',
           tools,
-          system: agent.instructions || undefined,
+          system: systemPrompt,
           messages: messagesForContext as CoreMessage[],
           maxRetries: agent.maxRetries == null ? undefined : agent.maxRetries,
           frequencyPenalty:
@@ -474,6 +485,7 @@ export class TasksService {
         createdAt: expansion?.createdAt ?? false,
         updatedAt: expansion?.updatedAt ?? false,
         customIdentifier: expansion?.customIdentifier ?? false,
+        subTasks: expansion?.subTasks,
         messages: expansion?.messages
           ? {
               select: {
@@ -602,6 +614,7 @@ export class TasksService {
         description: expansion?.description ?? false,
         createdAt: expansion?.createdAt ?? false,
         updatedAt: expansion?.updatedAt ?? false,
+        subTasks: expansion?.subTasks,
         messages: expansion?.messages
           ? {
               select: {
@@ -780,11 +793,17 @@ export class TasksService {
         maxTokens: 25,
       });
 
+      // Process the result to remove any thinking content
+      const processedText = result.text.replace(
+        /<think>[\s\S]*?<\/think>/g,
+        '',
+      );
+
       //name can be a maximum of 100 characters
       const newName =
-        result.text.length > 100
-          ? result.text.slice(0, 97) + '...'
-          : result.text;
+        processedText.length > 100
+          ? processedText.slice(0, 97) + '...'
+          : processedText;
 
       //If the generateText fails, it could return an empty string, so we check if the newName is not empty.
       if (newName?.trim()) {
@@ -859,6 +878,47 @@ export class TasksService {
     });
 
     return !!belongs;
+  };
+
+  /**
+   * Manage subtasks for a task - create, update, complete, or delete subtasks
+   */
+  manageSubTasks = async ({
+    taskId,
+    newSubTasks,
+    completedSubTasks,
+    blockedSubTasks,
+    pendingSubTasks,
+    deletedSubTasks,
+  }: {
+    taskId: string;
+    newSubTasks?: string[];
+    completedSubTasks?: string[];
+    blockedSubTasks?: string[];
+    pendingSubTasks?: string[];
+    deletedSubTasks?: string[];
+  }) => {
+    // Verify task exists
+    const task = await this.prisma.task.findUnique({
+      where: { id: taskId },
+      select: { id: true },
+    });
+
+    if (!task) {
+      throw new NotFoundException('Task not found');
+    }
+
+    // Use the SubTasksService to manage the subtasks
+    const updatedSubTasks = await this.subTasksService.manageSubTasks({
+      taskId,
+      newSubTasks,
+      completedSubTasks,
+      blockedSubTasks,
+      pendingSubTasks,
+      deletedSubTasks,
+    });
+
+    return updatedSubTasks;
   };
 
   #addDataToInputMessages = ({
@@ -1276,6 +1336,79 @@ export class TasksService {
     return tools;
   };
 
+  /**
+   * Injects tool-specific system prompts based on which tools are available to the agent
+   * @returns Modified system prompt with tool-specific instructions
+   */
+  #injectToolSystemPrompts = ({
+    agent,
+    baseSystemPrompt,
+  }: {
+    agent: Awaited<ReturnType<TasksService['getAgentDataForMessaging']>>;
+    baseSystemPrompt: string;
+  }): string => {
+    let systemPrompt = baseSystemPrompt;
+
+    // Check if manage-subtasks action is available
+    const hasManageSubtasksAction = (
+      agent.tools as WorkflowNodeForRunner[]
+    )?.some((tool) => tool.actionId === 'agent_action_manage-subtasks');
+
+    // Check if message-agent action is available
+    const hasMessageAgentAction = (
+      agent.tools as WorkflowNodeForRunner[]
+    )?.some((tool) => tool.actionId === 'ai_action_message-agent');
+
+    // Add subtask management instructions if the action is available
+    if (hasManageSubtasksAction) {
+      const subtaskInstructions = `
+# Task Management Instructions
+
+Before you begin working on your task:
+1. First, use the Manage Subtasks tool to create a plan with clear subtasks.
+2. Break down complex tasks into smaller, manageable subtasks.
+
+As you work:
+1. Keep your subtasks updated as you make progress:
+   - Mark subtasks as complete when you finish them
+   - Mark subtasks as blocked if you cannot proceed
+   - Add new subtasks if you discover additional work needed
+   - Remove subtasks that are no longer relevant
+
+Continue working until all relevant subtasks are completed or clearly marked as blocked with explanations.
+
+Remember that effective task management demonstrates thoroughness and organization.
+`;
+      systemPrompt = subtaskInstructions + '\n\n' + systemPrompt;
+    }
+    
+    // Add message-agent (sub-agent) instructions if the action is available
+    if (hasMessageAgentAction) {
+      const messageAgentInstructions = `
+# Sub-Agent Communication Instructions
+
+When messaging a sub-agent:
+
+1. Provide a clear, detailed description of the task you need help with
+2. Include ALL relevant context and information the sub-agent will need to complete their work successfully
+3. If you have specific requirements or constraints, state them explicitly
+4. Submit one clear request at a time rather than multiple questions or tasks
+
+When receiving responses from sub-agents:
+
+1. If the sub-agent asks a question, provide a complete and helpful response
+2. Continue the conversation until the sub-agent has completed their task
+3. Do not end the interaction prematurely - engage with the sub-agent until the task is complete
+4. Remember that each message to a sub-agent costs credits, so make your requests efficient but thorough
+
+Effective delegation to sub-agents helps you solve complex problems more efficiently.
+`;
+      systemPrompt = messageAgentInstructions + '\n\n' + systemPrompt;
+    }
+
+    return systemPrompt;
+  };
+
   #getPhoneTools = async ({
     workspaceId,
     projectId,
@@ -1598,6 +1731,14 @@ export class TasksService {
             createdAt: 'asc',
           },
         },
+        subTasks: {
+          select: {
+            id: true,
+            name: true,
+            status: true,
+            description: true,
+          },
+        },
       },
     });
 
@@ -1681,4 +1822,17 @@ type MessageTaskProps = {
   simpleResponse?: boolean;
 
   shouldRenameTask?: boolean;
+  shouldInitializeSubtasks?: boolean;
+
+  /**
+   * Current subtask loop count, used to prevent infinite loops
+   * `default: 0`
+   */
+  subtaskLoopCount?: number;
+
+  /**
+   * Maximum number of subtask loops to perform
+   * `default: 5`
+   */
+  maxSubtaskLoops?: number;
 };
