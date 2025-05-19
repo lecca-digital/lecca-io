@@ -2388,6 +2388,10 @@ body {
   border-radius: 0.25rem;
 }
 
+.rounded-2xl {
+  border-radius: 1rem;
+}
+
 .rounded-3xl {
   border-radius: 1.5rem;
 }
@@ -2414,10 +2418,6 @@ body {
 
 .rounded-sm {
   border-radius: calc(var(--radius) - 4px);
-}
-
-.rounded-2xl {
-  border-radius: 1rem;
 }
 
 .rounded-r-md {
@@ -5054,8 +5054,8 @@ body {
     min-width: 450px;
   }
 
-  .lg\:max-w-2xl {
-    max-width: 42rem;
+  .lg\:max-w-4xl {
+    max-width: 56rem;
   }
 
   .lg\:max-w-\[750px\] {
@@ -5064,14 +5064,6 @@ body {
 
   .lg\:max-w-\[900px\] {
     max-width: 900px;
-  }
-
-  .lg\:max-w-3xl {
-    max-width: 48rem;
-  }
-
-  .lg\:max-w-4xl {
-    max-width: 56rem;
   }
 
   .lg\:grid-cols-2 {

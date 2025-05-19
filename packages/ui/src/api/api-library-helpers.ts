@@ -482,25 +482,17 @@ export abstract class ApiLibraryHelper {
       Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
     };
 
-    // if (localStorage.getItem('workspaceId')) {
-    //   headers['workspace-id'] = localStorage.getItem('workspaceId');
-    // }
-
-    // if (localStorage.getItem('userId')) {
-    //   headers['user-id'] = localStorage.getItem('userId');
-    // }
+    const requestConfig = {
+      headers,
+      params: config?.params,
+      signal: config?.signal,
+    };
 
     if (httpMethod === 'get' || httpMethod === 'delete') {
       //GET AND DELETE DONT USE DATA
-      request = axios[httpMethod](url, {
-        headers,
-        params: config?.params,
-      });
+      request = axios[httpMethod](url, requestConfig);
     } else {
-      request = axios[httpMethod](url, data ?? {}, {
-        headers,
-        params: config?.params,
-      });
+      request = axios[httpMethod](url, data ?? {}, requestConfig);
     }
 
     return request;

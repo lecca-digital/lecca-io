@@ -118,4 +118,5 @@ export interface ApiLibraryConfig {
     (string | number | boolean) | (string | number | boolean)[]
   >;
   options?: Record<string, unknown>;
+  signal?: AbortSignal;
 }
